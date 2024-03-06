@@ -1,6 +1,6 @@
 # Task Manager
 
-A simple and convenient application for task management in a group.
+A simple and convenient application for task management.
 
 ## About the Project
 
