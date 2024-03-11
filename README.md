@@ -46,21 +46,21 @@ Objectives:
   
   Framework: Android Studio
   
-  Library: Firebase
+  Library:
 
 ## Development Team
   
-  Name:
+  Name, Surname: Artsiom Kalahryu
   
-  Role:
+  Role: Back-end
   
-  Name:
+  Name, Surname: Aliaksandr Ihnatsyeu
   
-  Role:
+  Role: Front-end
   
-  Name:
+  Name, Surname: Igor Egorov
   
-  Role:
+  Role: Project Manager, Full-stack
 
 ## Getting Started
 
