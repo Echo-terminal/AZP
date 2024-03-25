@@ -1,0 +1,7 @@
+<resources>
+    <!-- Стиль для изменения цвета иконок меню -->
+    <style name="MyMenuIconStyle" parent="@style/Widget.AppCompat.ActionBar.TabBar">
+        <!-- Задаем цвет иконок меню -->
+        <item name="android:tint">#FF0000</item> <!-- Например, красный цвет -->
+    </style>
+</resources>

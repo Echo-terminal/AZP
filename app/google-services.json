@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "51271302792",
+    "project_id": "azp1-48a2f",
+    "storage_bucket": "azp1-48a2f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:51271302792:android:ff85a567f8e5a030c3e93d",
+        "android_client_info": {
+          "package_name": "com.example.azp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuFqfL7x7UjCwQ9zXfwdmvv542AB7u7Go"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
