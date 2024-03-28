@@ -51,6 +51,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 binding.drawerLayout.openDrawer(GravityCompat.START)
             }
         }
+
+        //открытие профиля
+        binding.profileImage.setOnClickListener {
+            openFragment(ProfileFragment())
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
     }
 
     //создание правого меню
@@ -92,7 +99,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     //кнопка правого меню и открытие страниц
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_profile -> {
                 openFragment(ProfileFragment())
@@ -104,5 +111,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             else -> return super.onOptionsItemSelected(item)
         }
-    }
+    }*/
+
+
 }
