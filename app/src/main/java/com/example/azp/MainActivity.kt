@@ -1,23 +1,34 @@
 package com.example.azp
 
 import ProfileFragment
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.azp.databinding.ActivityMainBinding
+import com.example.azp.databinding.FragmentListBinding
 import com.example.azp.fragment.CalendarFragment
 import com.example.azp.fragment.DocumentsFragment
 import com.example.azp.fragment.GraphsFragment
+//import com.example.azp.fragment.ItemAdapter
 import com.example.azp.fragment.ListFragment
 import com.example.azp.fragment.MeetingsFragment
 import com.example.azp.fragment.SettingsFragment
+import com.example.azp.fragment.Task
 import com.google.android.material.navigation.NavigationView
+import com.example.azp.fragment.TaskAdapter
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -28,6 +39,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+//        setContentView(R.layout.fragment_list)
 
         setSupportActionBar(binding.toolbar)
 
@@ -57,6 +69,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             openFragment(ProfileFragment())
             binding.drawerLayout.closeDrawer(GravityCompat.START)
         }
+
+        //val addButton: Button = findViewById(R.id.addButton1)
+
+       val imageView1 : ImageView = findViewById(R.id.imageView2)
 
     }
 
@@ -112,6 +128,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             else -> return super.onOptionsItemSelected(item)
         }
     }*/
+
+
 
 
 }

@@ -5,4 +5,8 @@
     <color name="grey">#8F8F8F</color>
     <color name="grey2">#E6E6E6</color>
     <color name="grey3">#D5D5D5</color>
+    <color name="purple">#F7CDFF</color>
+    <color name="blue">#A5EFFF</color>
+    <color name="pink_beige">#F5AFAF</color>
+    <color name="light_green">#B5F5AF</color>
 </resources>
