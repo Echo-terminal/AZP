@@ -1,5 +1,6 @@
 package com.example.azp.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.azp.R
+import com.example.azp.activities.AddTaskActivity
+import com.example.azp.activities.LoginActivity
 
 class ListFragment : Fragment() {
 
@@ -57,23 +60,16 @@ class ListFragment : Fragment() {
         )
 
         val addButton1 = view.findViewById<ImageButton>(R.id.addButton1)
-        //val textView_title = view.findViewById<EditText>(R.id.textView_title)
         val recyclerView_1 = view.findViewById<RecyclerView>(R.id.recyclerView_1)
 
         val adapter = TaskAdapter(addItemList)
         recyclerView_1.adapter = adapter
         recyclerView_1.layoutManager = LinearLayoutManager(requireActivity())
 
-        /*addButton1.setOnClickListener {
-            //val title = textView_title.text.toString()
-            //val task = Task(title)
-            //addItemList.add(task)
-            adapter.notifyItemInserted(addItemList.size - 1)
-
-        }*/
 
         addButton1.setOnClickListener{
-
+            val intent = Intent(context, AddTaskActivity::class.java)
+            startActivity(intent)
         }
 
         //важно, всегда в конце

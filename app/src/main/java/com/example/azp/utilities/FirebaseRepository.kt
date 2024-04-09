@@ -1,10 +1,10 @@
-package com.example.azp
+package com.example.azp.utilities
 
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 interface FirebaseRepositoryCallback<T> {
     fun onSuccess(result: List<Task>)
@@ -12,14 +12,13 @@ interface FirebaseRepositoryCallback<T> {
 }
 
 
-class FirebaseRepository(private val rootNode: String, private val mapper: FirebaseMapper) :
+class FirebaseRepository(private val rootNode: String) :
     FirebaseRepositoryCallback<Task> {
 
-    private val databaseReference: DatabaseReference = FirebaseDatabase.getInstance().getReference(rootNode)
-
+    private val databaseReference: DatabaseReference = FirebaseDatabase.getInstance().getReference()
     fun add(item: Task, callback: FirebaseRepositoryCallback<Task>) {
         val key = databaseReference.push().key ?: return
-        databaseReference.child(key).setValue(mapper.toHashMap(item))
+        databaseReference.child(key).setValue(item)
             .addOnSuccessListener {
                 callback.onSuccess(listOf(item))
             }
@@ -31,8 +30,7 @@ class FirebaseRepository(private val rootNode: String, private val mapper: Fireb
     fun getAll(callback: FirebaseRepositoryCallback<Task>) {
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val items = snapshot.children.map { mapper.fromHashMap(it.value as HashMap<*, *> ) }.toList()
-                callback.onSuccess(items)
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -45,8 +43,7 @@ class FirebaseRepository(private val rootNode: String, private val mapper: Fireb
         databaseReference.child(id).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    val item = mapper.fromHashMap(snapshot.value as HashMap<*, *> )
-                    callback.onSuccess(listOf(item))
+
                 } else {
                     callback.onSuccess(emptyList())
                 }
@@ -60,7 +57,7 @@ class FirebaseRepository(private val rootNode: String, private val mapper: Fireb
 
     fun update(item: Task, callback: FirebaseRepositoryCallback<Task>) {
         val id = item.getId() ?: return
-        databaseReference.child(id).setValue(mapper.toHashMap(item))
+        databaseReference.child(id).setValue(item)
             .addOnSuccessListener {
                 callback.onSuccess(listOf(item))
             }
@@ -87,31 +84,4 @@ class FirebaseRepository(private val rootNode: String, private val mapper: Fireb
 
     }
 
-}
-
-interface Mapper<T> {
-    fun toHashMap(model: T): HashMap<String, Any>
-    fun fromHashMap(hashMap: HashMap<*, *>): T
-}
-class FirebaseMapper : Mapper<Task> {
-
-    override fun toHashMap(model: Task): HashMap<String, Any> {
-        val hashMap = HashMap<String, Any>()
-        hashMap["id"] = model.getId()
-        hashMap["title"] = model.getTitle()
-        hashMap["description"] = model.getDescription()
-        hashMap["state"] = model.getState()
-        hashMap["dueDate"] = model.getDueDate()
-
-        return hashMap
-    }
-
-    override fun fromHashMap(hashMap: HashMap<*, *>): Task {
-        val id = hashMap["id"] as String
-        val title = hashMap["title"] as String
-        val description = hashMap["description"] as String
-        val state = hashMap["state"] as TaskState
-        val dueDate = hashMap["dueDate"] as Long
-        return Task(id, title, description, state, dueDate)
-    }
 }

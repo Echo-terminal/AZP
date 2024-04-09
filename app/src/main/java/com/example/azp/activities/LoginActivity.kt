@@ -5,8 +5,10 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.example.azp.AuthViewModel
 import com.example.azp.R
+import com.example.azp.utilities.AuthRepository
+import com.example.azp.utilities.AuthViewModel
+import com.example.azp.utilities.AuthViewModelFactory
 
 class LoginActivity: AppCompatActivity() {
     private lateinit var emailEditText: EditText
@@ -14,7 +16,10 @@ class LoginActivity: AppCompatActivity() {
     private lateinit var loginButton: Button
     private lateinit var signupButton: Button
 
-    private val model: AuthViewModel by viewModels()
+    private val authRepository = AuthRepository()
+    private val model: AuthViewModel by viewModels(){
+        AuthViewModelFactory(authRepository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +34,7 @@ class LoginActivity: AppCompatActivity() {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
 
-            model.signInWithEmailAndPassword(email, password)
+            model.signIn(email, password)
 
             finish()
         }
@@ -38,7 +43,7 @@ class LoginActivity: AppCompatActivity() {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
 
-            model.createUserWithEmailAndPassword(email, password)
+            model.createUser(email, password)
 
             finish()
         }

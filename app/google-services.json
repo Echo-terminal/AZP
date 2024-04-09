@@ -1,13 +1,14 @@
 {
   "project_info": {
-    "project_number": "51271302792",
-    "project_id": "azp1-48a2f",
-    "storage_bucket": "azp1-48a2f.appspot.com"
+    "project_number": "70608682016",
+    "firebase_url": "https://azp2-a1183-default-rtdb.firebaseio.com",
+    "project_id": "azp2-a1183",
+    "storage_bucket": "azp2-a1183.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:51271302792:android:ff85a567f8e5a030c3e93d",
+        "mobilesdk_app_id": "1:70608682016:android:beaa7dab3c3596b074d045",
         "android_client_info": {
           "package_name": "com.example.azp"
         }
@@ -15,7 +16,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDuFqfL7x7UjCwQ9zXfwdmvv542AB7u7Go"
+          "current_key": "AIzaSyB057WK-UnzI3a_HTqlU-nnfu4GrH8EBkU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70608682016:android:624cb0c3bbb6501174d045",
+        "android_client_info": {
+          "package_name": "com.exaple.AZP"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB057WK-UnzI3a_HTqlU-nnfu4GrH8EBkU"
         }
       ],
       "services": {

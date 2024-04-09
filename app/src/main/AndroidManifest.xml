@@ -13,11 +13,6 @@
         android:theme="@style/Theme.AZP"
         tools:targetApi="31" >
         <activity
-            android:name=".MainActivity2"
-            android:exported="false"
-            android:label="@string/title_activity_main2"
-            android:theme="@style/Theme.AZP" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
@@ -29,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.LoginActivity" />
-        <activity android:name=".ListActivity" />
+        <activity android:name=".activities.AddTaskActivity" />
     </application>
 
 </manifest>
