@@ -7,17 +7,17 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-interface FirebaseRepositoryCallback<T> {
+interface TaskFirebaseRepositoryCallback<T> {
     fun onSuccess(result: List<Task>)
     fun onError(e: Exception)
 }
 
 
-class FirebaseRepository(private val rootNode: String) :
-    FirebaseRepositoryCallback<Task> {
+class TaskFirebaseRepository() :
+    TaskFirebaseRepositoryCallback<Task> {
 
     private val databaseReference: DatabaseReference = FirebaseDatabase.getInstance().getReference()
-    fun add(item: Task, callback: FirebaseRepositoryCallback<Task>) {
+    fun add(item: Task, callback: TaskFirebaseRepositoryCallback<Task>) {
         val key = databaseReference.push().key ?: return
         databaseReference.child(key).setValue(item)
             .addOnSuccessListener {
@@ -28,7 +28,7 @@ class FirebaseRepository(private val rootNode: String) :
             }
     }
 
-    fun getAll(callback: FirebaseRepositoryCallback<Task>) {
+    fun getAll(callback: TaskFirebaseRepositoryCallback<Task>) {
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
@@ -40,7 +40,7 @@ class FirebaseRepository(private val rootNode: String) :
         })
     }
 
-    fun get(id: String, callback: FirebaseRepositoryCallback<Task>) {
+    fun get(id: String, callback: TaskFirebaseRepositoryCallback<Task>) {
         databaseReference.child(id).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -56,7 +56,7 @@ class FirebaseRepository(private val rootNode: String) :
         })
     }
 
-    fun update(item: Task, callback: FirebaseRepositoryCallback<Task>) {
+    fun update(item: Task, callback: TaskFirebaseRepositoryCallback<Task>) {
         val id = item.getId() ?: return
         databaseReference.child(id).setValue(item)
             .addOnSuccessListener {
@@ -67,7 +67,7 @@ class FirebaseRepository(private val rootNode: String) :
             }
     }
 
-    fun delete(id: String, callback: FirebaseRepositoryCallback<Task>) {
+    fun delete(id: String, callback: TaskFirebaseRepositoryCallback<Task>) {
         databaseReference.child(id).removeValue()
             .addOnSuccessListener {
                 callback.onSuccess(emptyList()) // Assuming no data to return after deletion

@@ -10,13 +10,14 @@ enum class TaskState {
 
 class Task
     (
-    private val id: String,
+    private var id: String,
     private var title: String,
     private var description: String,
     private var state: TaskState = TaskState.TODO,
-    private var dueDate: Long
+    private var dueDate: String
 ) {
-    fun getId(): String {
+
+    fun getId(): String{
         return id
     }
     fun getTitle(): String {
@@ -31,7 +32,7 @@ class Task
         return state
     }
 
-    fun getDueDate(): Long {
+    fun getDueDate(): String {
         return dueDate
     }
 
@@ -48,7 +49,7 @@ class Task
         state = newState
     }
 
-    fun setDueDate(newDueDate: Long) {
+    fun setDueDate(newDueDate: String) {
         dueDate = newDueDate
     }
 
