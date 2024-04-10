@@ -1,18 +1,16 @@
 package com.example.azp.utilities
 
 import android.util.Log
+import com.example.azp.data_classes.User
 import com.google.firebase.auth.FirebaseUser
 
-class AuthRepository() {
+class AuthRepository {
 
     fun signInWithEmailAndPassword(email: String, password: String){
         AUTH.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener { authResult ->
-                val dateMap = mutableMapOf<String, Any>()
-                dateMap[CHILD_UID] = authResult.user?.uid.toString()
-                dateMap[CHILD_EMAIL] = authResult.user?.email.toString()
-                dateMap[CHILD_USERNAME] = authResult.user?.email.toString()
-                REF_DATABASE_ROOT.child(NODE_USER).child(authResult.user?.uid.toString()).updateChildren(dateMap)
+                val user = User(authResult.user?.uid.toString(), email, email)
+                REF_DATABASE_ROOT.child(NODE_USER).child(authResult.user?.uid.toString()).setValue(user)
             }
             .addOnFailureListener { exception ->
                 Log.e("AuthRepository", "signInWithEmailAndPassword: ${exception.message}")
@@ -22,11 +20,8 @@ class AuthRepository() {
     fun createUserWithEmailAndPassword(email: String, password: String){
         AUTH.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener { authResult ->
-                val dateMap = mutableMapOf<String, Any>()
-                dateMap[CHILD_UID] = authResult.user?.uid.toString()
-                dateMap[CHILD_EMAIL] = authResult.user?.email.toString()
-                dateMap[CHILD_USERNAME] = authResult.user?.email.toString()
-                REF_DATABASE_ROOT.child(NODE_USER).child(authResult.user?.uid.toString()).updateChildren(dateMap)
+                val user = User(authResult.user?.uid.toString(), email, email)
+                REF_DATABASE_ROOT.child(NODE_USER).child(authResult.user?.uid.toString()).setValue(user)
             }
             .addOnFailureListener { exception ->
                 Log.e("AuthRepository", "createUserWithEmailAndPassword: ${exception.message}")

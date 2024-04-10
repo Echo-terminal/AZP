@@ -1,6 +1,6 @@
 package com.example.azp.utilities
 
-import com.example.azp.Task
+import com.example.azp.data_classes.Task
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -13,13 +13,14 @@ interface TaskFirebaseRepositoryCallback<T> {
 }
 
 
-class TaskFirebaseRepository() :
+class TaskFirebaseRepository :
     TaskFirebaseRepositoryCallback<Task> {
 
     private val databaseReference: DatabaseReference = FirebaseDatabase.getInstance().getReference()
     fun add(item: Task, callback: TaskFirebaseRepositoryCallback<Task>) {
         val key = databaseReference.push().key ?: return
-        databaseReference.child(key).setValue(item)
+        item.setId(key)
+        databaseReference.child(NODE_USER).child(UID).child(NODE_TASK).child(key).setValue(item)
             .addOnSuccessListener {
                 callback.onSuccess(listOf(item))
             }
@@ -40,8 +41,9 @@ class TaskFirebaseRepository() :
         })
     }
 
-    fun get(id: String, callback: TaskFirebaseRepositoryCallback<Task>) {
-        databaseReference.child(id).addListenerForSingleValueEvent(object : ValueEventListener {
+    fun get(item: Task, callback: TaskFirebaseRepositoryCallback<Task>) {
+        val id = item.getId()
+        databaseReference.child(NODE_USER).child(UID).child(NODE_TASK).child(id).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
 
@@ -57,8 +59,8 @@ class TaskFirebaseRepository() :
     }
 
     fun update(item: Task, callback: TaskFirebaseRepositoryCallback<Task>) {
-        val id = item.getId() ?: return
-        databaseReference.child(id).setValue(item)
+        val id = item.getId()
+        databaseReference.child(NODE_USER).child(UID).child(NODE_TASK).child(id).setValue(item)
             .addOnSuccessListener {
                 callback.onSuccess(listOf(item))
             }
@@ -68,7 +70,7 @@ class TaskFirebaseRepository() :
     }
 
     fun delete(id: String, callback: TaskFirebaseRepositoryCallback<Task>) {
-        databaseReference.child(id).removeValue()
+        databaseReference.child(NODE_USER).child(UID).child(NODE_TASK).child(id).removeValue()
             .addOnSuccessListener {
                 callback.onSuccess(emptyList()) // Assuming no data to return after deletion
             }

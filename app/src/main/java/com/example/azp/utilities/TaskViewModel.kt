@@ -1,18 +1,13 @@
-package com.example.azp
+package com.example.azp.utilities
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.azp.utilities.AuthViewModel
-import com.example.azp.utilities.TaskFirebaseRepository
-import com.example.azp.utilities.TaskFirebaseRepositoryCallback
+import com.example.azp.data_classes.Task
 
 class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : ViewModel() {
 
     private val _tasks = MutableLiveData<List<Task>>()
-    val tasks: LiveData<List<Task>> = _tasks
-
     init {
         getAllTasks() // Load tasks initially
     }

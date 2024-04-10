@@ -9,9 +9,6 @@ import com.google.firebase.auth.FirebaseUser
 class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
     private val _userLiveData = MutableLiveData<FirebaseUser?>()
-    val userLiveData: LiveData<FirebaseUser?> = _userLiveData
-
-    val emailLiveData = MutableLiveData<String?>()
 
     fun signIn(email: String, password: String) {
         authRepository.signInWithEmailAndPassword(email, password)
@@ -21,15 +18,14 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         authRepository.createUserWithEmailAndPassword(email, password)
     }
 
-    fun getCurrentUser() {
+    fun getCurrentUser():LiveData<FirebaseUser?> {
         _userLiveData.value = authRepository.getCurrentUser()
-        emailLiveData.value = _userLiveData.value?.email
+        return _userLiveData
     }
 
     fun signOut() {
         authRepository.signOut()
         _userLiveData.value = null
-        emailLiveData.value = null
     }
 
 }

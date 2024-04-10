@@ -1,5 +1,7 @@
 package com.example.azp.activities
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -17,7 +19,7 @@ class LoginActivity: AppCompatActivity() {
     private lateinit var signupButton: Button
 
     private val authRepository = AuthRepository()
-    private val model: AuthViewModel by viewModels(){
+    private val model: AuthViewModel by viewModels {
         AuthViewModelFactory(authRepository)
     }
 
@@ -36,6 +38,10 @@ class LoginActivity: AppCompatActivity() {
 
             model.signIn(email, password)
 
+            val resultIntent = Intent()
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
+
             finish()
         }
 
@@ -44,6 +50,10 @@ class LoginActivity: AppCompatActivity() {
             val password = passwordEditText.text.toString().trim()
 
             model.createUser(email, password)
+
+            val resultIntent = Intent()
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
 
             finish()
         }

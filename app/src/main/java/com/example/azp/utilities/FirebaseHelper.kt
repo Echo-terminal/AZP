@@ -8,10 +8,10 @@ lateinit var AUTH: FirebaseAuth
 lateinit var REF_DATABASE_ROOT:DatabaseReference
 
 const val NODE_USER = "users"
-const val CHILD_UID = "id"
-const val CHILD_USERNAME = "username"
-const val CHILD_EMAIL = "email"
+const val NODE_TASK = "tasks"
+var UID: String = ""
 fun initFirebase(){
     AUTH = FirebaseAuth.getInstance()
     REF_DATABASE_ROOT = FirebaseDatabase.getInstance().reference
+    UID = AUTH.currentUser?.uid.toString()
 }

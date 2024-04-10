@@ -1,6 +1,5 @@
 package com.example.azp
 
-//import com.example.azp.fragment.ItemAdapter
 import ProfileFragment
 import android.os.Bundle
 import android.view.MenuItem
