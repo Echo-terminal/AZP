@@ -41,8 +41,6 @@ class LoginActivity: AppCompatActivity() {
             val resultIntent = Intent()
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
-
-            finish()
         }
 
         signupButton.setOnClickListener {
@@ -53,8 +51,6 @@ class LoginActivity: AppCompatActivity() {
 
             val resultIntent = Intent()
             setResult(Activity.RESULT_OK, resultIntent)
-            finish()
-
             finish()
         }
 

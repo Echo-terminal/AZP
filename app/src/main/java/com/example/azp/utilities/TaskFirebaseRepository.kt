@@ -28,11 +28,20 @@ class TaskFirebaseRepository :
                 callback.onError(it)
             }
     }
+    fun getAllTasks(callback: TaskFirebaseRepositoryCallback<Task>) {
 
-    fun getAll(callback: TaskFirebaseRepositoryCallback<Task>) {
-        databaseReference.addValueEventListener(object : ValueEventListener {
+        val tasksRef = databaseReference.child(NODE_USER).child(UID).child(NODE_TASK)
+
+        tasksRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-
+                val taskList = mutableListOf<Task>()
+                for (taskSnapshot in snapshot.children) {
+                    val task = taskSnapshot.getValue(Task::class.java)
+                    task?.let {
+                        taskList.add(it)
+                    }
+                }
+                callback.onSuccess(taskList)
             }
 
             override fun onCancelled(error: DatabaseError) {

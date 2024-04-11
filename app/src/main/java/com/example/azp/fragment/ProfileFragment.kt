@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.azp.R
@@ -21,20 +22,23 @@ class ProfileFragment : Fragment() {
     private lateinit var logOutButton: ImageButton
     private lateinit var model: AuthViewModel
 
+    private val startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                observeViewModel()
+            }
+        }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val authRepository = AuthRepository()
         val viewModelFactory = AuthViewModelFactory(authRepository)
         model = ViewModelProvider(this, viewModelFactory)[AuthViewModel::class.java]
         observeViewModel()
+
+        return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,13 +48,8 @@ class ProfileFragment : Fragment() {
             if (model.getCurrentUser().value == null) {
                 val loginRequestCode = 123
                 val intent = Intent(context, LoginActivity::class.java)
-                startActivityForResult(intent, loginRequestCode)
+                startForResult.launch(intent)
 
-                fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-                    if (requestCode == loginRequestCode && resultCode == Activity.RESULT_OK) {
-                        observeViewModel()
-                    }
-                }
             }
         }
         logOutButton = view.findViewById(R.id.log_out)
