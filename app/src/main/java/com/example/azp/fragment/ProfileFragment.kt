@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.azp.MainActivity
 import com.example.azp.R
 import com.example.azp.activities.LoginActivity
 import com.example.azp.utilities.AuthRepository
@@ -56,6 +58,9 @@ class ProfileFragment : Fragment() {
         logOutButton = view.findViewById(R.id.log_out)
         logOutButton.setOnClickListener {
             model.signOut()
+            val intent = Intent(context, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
         }
     }
 

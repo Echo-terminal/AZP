@@ -32,6 +32,10 @@ class AuthRepository {
         return AUTH.currentUser
     }
 
+    fun checkUser(): Boolean {
+        return AUTH.currentUser!=null
+    }
+
     fun signOut() {
         AUTH.signOut()
     }
