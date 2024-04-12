@@ -23,6 +23,10 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         return _userLiveData
     }
 
+    fun checkUser():Boolean{
+        return authRepository.checkUser()
+    }
+
     fun signOut() {
         authRepository.signOut()
         _userLiveData.value = null
