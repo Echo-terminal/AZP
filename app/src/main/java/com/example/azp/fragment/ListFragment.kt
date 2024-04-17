@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
-import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,34 +36,52 @@ class ListFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_list, container, false)
 
-        val b_in_progress = view.findViewById<Button>(R.id.button4)
-        val b_to_do = view.findViewById<Button>(R.id.button5)
-        val b_milestones = view.findViewById<Button>(R.id.button6)
-        val b_complete = view.findViewById<Button>(R.id.button7)
+        val buttonInProgress = view.findViewById<Button>(R.id.buttonInProgress)
+        val buttonToDo = view.findViewById<Button>(R.id.buttonToDo)
+        val buttonMilestones = view.findViewById<Button>(R.id.buttonMilestones)
+        val buttonComplete = view.findViewById<Button>(R.id.buttonComplete)
 
-        b_in_progress.setOnClickListener{
-            Toast.makeText(requireContext(), "b_in_progress clicked", Toast.LENGTH_SHORT).show()
+        val layoutToDo = view.findViewById<ConstraintLayout>(R.id.constraintLayout2)
+        val layoutInProgress = view.findViewById<ConstraintLayout>(R.id.constraintLayout1)
+        val layoutMilestone = view.findViewById<ConstraintLayout>(R.id.constraintLayout3)
+        val layoutComplete = view.findViewById<ConstraintLayout>(R.id.constraintLayout4)
+
+        buttonInProgress.setOnClickListener {
+            layoutInProgress.visibility = View.VISIBLE
+            layoutToDo.visibility = View.GONE
+            layoutComplete.visibility = View.GONE
+            layoutMilestone.visibility = View.GONE
         }
 
-        b_to_do.setOnClickListener{
-            Toast.makeText(requireContext(), "b_to_do clicked", Toast.LENGTH_SHORT).show()
+        buttonToDo.setOnClickListener {
+            layoutInProgress.visibility = View.GONE
+            layoutToDo.visibility = View.VISIBLE
+            layoutComplete.visibility = View.GONE
+            layoutMilestone.visibility = View.GONE
         }
 
-        b_milestones.setOnClickListener{
-            Toast.makeText(requireContext(), "b_milestones clicked", Toast.LENGTH_SHORT).show()
+        buttonMilestones.setOnClickListener {
+            layoutInProgress.visibility = View.GONE
+            layoutToDo.visibility = View.GONE
+            layoutComplete.visibility = View.GONE
+            layoutMilestone.visibility = View.VISIBLE
         }
 
-        b_complete.setOnClickListener{
-            Toast.makeText(requireContext(), "b_complete clicked", Toast.LENGTH_SHORT).show()
+        buttonComplete.setOnClickListener {
+            layoutInProgress.visibility = View.GONE
+            layoutToDo.visibility = View.GONE
+            layoutComplete.visibility = View.VISIBLE
+            layoutMilestone.visibility = View.GONE
         }
+
 
 
         val addButton = view.findViewById<ImageButton>(R.id.addButton1)
 
-        recyclerViewInProgress = view.findViewById<RecyclerView>(R.id.recyclerView_1)
-        recyclerViewToDo = view.findViewById<RecyclerView>(R.id.recyclerView_2)
-        recyclerViewCompleted = view.findViewById<RecyclerView>(R.id.recyclerView_4)
-        recyclerViewMilestones = view.findViewById<RecyclerView>(R.id.recyclerView_3)
+        recyclerViewInProgress = view.findViewById<RecyclerView>(R.id.recyclerViewInProgress)
+        recyclerViewToDo = view.findViewById<RecyclerView>(R.id.recyclerViewTodo)
+        recyclerViewCompleted = view.findViewById<RecyclerView>(R.id.recyclerViewComplete)
+        recyclerViewMilestones = view.findViewById<RecyclerView>(R.id.recyclerViewMilestones)
 
         val layoutManagerToDo = LinearLayoutManager(requireContext())
         val layoutManagerInProgress = LinearLayoutManager(requireContext())
