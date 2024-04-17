@@ -9,4 +9,5 @@
     <color name="blue">#A5EFFF</color>
     <color name="pink_beige">#F5AFAF</color>
     <color name="light_green">#B5F5AF</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>

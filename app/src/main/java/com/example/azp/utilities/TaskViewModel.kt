@@ -1,5 +1,6 @@
 package com.example.azp.utilities
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -8,12 +9,13 @@ import com.example.azp.data_classes.Task
 class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : ViewModel() {
 
     private val _tasks = MutableLiveData<List<Task>>()
+
     init {
         getAllTasks() // Load tasks initially
     }
 
-    fun getAllTasks() {
-        firebaseRepository.getAll(object : TaskFirebaseRepositoryCallback<Task> {
+    fun getAllTasks(): LiveData<List<Task>> {
+        firebaseRepository.getAllTasks(object : TaskFirebaseRepositoryCallback<Task> {
             override fun onSuccess(result: List<Task>) {
                 _tasks.value = result
             }
@@ -23,6 +25,7 @@ class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : Vi
                 e.printStackTrace()
             }
         })
+        return _tasks
     }
 
     fun addTask(task: Task) {

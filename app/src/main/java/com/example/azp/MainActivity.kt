@@ -1,15 +1,21 @@
 package com.example.azp
 
 import ProfileFragment
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.viewModels
+import com.example.azp.activities.LoginActivity
 import com.example.azp.databinding.ActivityMainBinding
 import com.example.azp.fragment.CalendarFragment
 import com.example.azp.fragment.DocumentsFragment
@@ -17,6 +23,9 @@ import com.example.azp.fragment.GraphsFragment
 import com.example.azp.fragment.ListFragment
 import com.example.azp.fragment.MeetingsFragment
 import com.example.azp.fragment.SettingsFragment
+import com.example.azp.utilities.AuthRepository
+import com.example.azp.utilities.AuthViewModel
+import com.example.azp.utilities.AuthViewModelFactory
 import com.example.azp.utilities.initFirebase
 import com.google.android.material.navigation.NavigationView
 
@@ -25,13 +34,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var fragmentManager: FragmentManager
     private lateinit var binding: ActivityMainBinding
+    private val startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_CANCELED) {
+                finish()
+            }
+        }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         initFields()
+        val authRepository = AuthRepository()
+        val model: AuthViewModel by viewModels {
+            AuthViewModelFactory(authRepository)
+        }
+        val user=model.checkUser()
+        if(!user){
+            val intent= Intent(this, LoginActivity::class.java)
+            startForResult.launch(intent)
+        }
 
         //кнопка навигации
         val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, R.string.nav_open, R.string.nav_close)
