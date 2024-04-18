@@ -17,6 +17,8 @@ class LoginActivity: AppCompatActivity() {
     private lateinit var passwordEditText: EditText
     private lateinit var loginButton: Button
     private lateinit var signupButton: Button
+    private lateinit var guestButton: Button
+
 
     private val authRepository = AuthRepository()
     private val model: AuthViewModel by viewModels {
@@ -31,6 +33,7 @@ class LoginActivity: AppCompatActivity() {
         passwordEditText = findViewById(R.id.edit_password)
         loginButton = findViewById(R.id.log_in_btn)
         signupButton = findViewById(R.id.sign_up_btn)
+        guestButton = findViewById(R.id.button_guest)
 
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
@@ -48,6 +51,14 @@ class LoginActivity: AppCompatActivity() {
             val password = passwordEditText.text.toString().trim()
 
             model.createUser(email, password)
+
+            val resultIntent = Intent()
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
+        }
+
+        guestButton.setOnClickListener{
+            model.guestUser()
 
             val resultIntent = Intent()
             setResult(Activity.RESULT_OK, resultIntent)

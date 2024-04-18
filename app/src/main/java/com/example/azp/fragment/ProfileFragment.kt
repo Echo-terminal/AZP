@@ -2,6 +2,7 @@
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,16 +56,27 @@ class ProfileFragment : Fragment() {
         }
         logOutButton = view.findViewById(R.id.log_out)
         logOutButton.setOnClickListener {
-            model.signOut()
-            val intent = Intent(context, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
+            model.getCurrentUser().observe(viewLifecycleOwner){user ->
+                if(user?.isAnonymous==true) {
+                    Log.d("ProfileFrag", "You are guest")
+                    model.fromGuesttoUser("vv@gmail.com","111111")
+                }
+                else {
+                    Log.d("ProfileFrag", "You are not guest")
+                    model.signOut()
+                    val intent = Intent(context, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                }
+            }
+
         }
     }
 
     private fun observeViewModel() {
         model.getCurrentUser().observe(viewLifecycleOwner) { user ->
-            emailTextView.text = user?.email ?: "User is not logged in"
+            if (user?.isAnonymous==true) emailTextView.text= "You are the Guest"
+            else emailTextView.text = user?.email ?: "User is not logged in"
         }
     }
 }
