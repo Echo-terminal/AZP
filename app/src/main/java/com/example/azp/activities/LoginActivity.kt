@@ -57,13 +57,5 @@ class LoginActivity: AppCompatActivity() {
             finish()
         }
 
-        guestButton.setOnClickListener{
-            model.guestUser()
-
-            val resultIntent = Intent()
-            setResult(Activity.RESULT_OK, resultIntent)
-            finish()
-        }
-
     }
 }
