@@ -2,8 +2,8 @@ package com.example.azp
 
 import ProfileFragment
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,8 +14,6 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.viewModels
-import com.example.azp.activities.LoginActivity
 import com.example.azp.databinding.ActivityMainBinding
 import com.example.azp.fragment.CalendarFragment
 import com.example.azp.fragment.DocumentsFragment
@@ -26,6 +24,7 @@ import com.example.azp.fragment.SettingsFragment
 import com.example.azp.utilities.AuthRepository
 import com.example.azp.utilities.AuthViewModel
 import com.example.azp.utilities.AuthViewModelFactory
+import com.example.azp.utilities.UID
 import com.example.azp.utilities.initFirebase
 import com.google.android.material.navigation.NavigationView
 
@@ -56,9 +55,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             AuthViewModelFactory(authRepository)
         }
         val user=model.checkUser()
+        Log.d("ProfileFrag", "$UID")
         if(!user){
-            val intent= Intent(this, LoginActivity::class.java)
-            startForResult.launch(intent)
+            model.guestUser()
         }
 
         //кнопка навигации

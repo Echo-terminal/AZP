@@ -1,4 +1,5 @@
 
+
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -8,11 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
-
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.azp.MainActivity
 import com.example.azp.R
 import com.example.azp.activities.LoginActivity
 import com.example.azp.utilities.AuthRepository
@@ -47,27 +46,18 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         emailTextView = view.findViewById(R.id.text_view_email)
-        emailTextView.setOnClickListener {
-            if (model.getCurrentUser().value == null) {
-                val intent = Intent(context, LoginActivity::class.java)
-                startForResult.launch(intent)
 
-            }
-        }
         logOutButton = view.findViewById(R.id.log_out)
         logOutButton.setOnClickListener {
-            model.getCurrentUser().observe(viewLifecycleOwner){user ->
-                if(user?.isAnonymous==true) {
-                    Log.d("ProfileFrag", "You are guest")
-                    model.fromGuesttoUser("vv@gmail.com","111111")
-                }
-                else {
-                    Log.d("ProfileFrag", "You are not guest")
-                    model.signOut()
-                    val intent = Intent(context, MainActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    startActivity(intent)
-                }
+            if(model.getCurrentUser().value?.isAnonymous == true) {
+                Log.d("ProfileFrag", "You are guest")
+                val intent = Intent(context, LoginActivity::class.java)
+                startForResult.launch(intent)
+            }
+            else {
+                Log.d("ProfileFrag", "You are not guest")
+                model.signOut()
+                model.guestUser()
             }
 
         }
