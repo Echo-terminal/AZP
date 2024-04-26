@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         initDatePicker()
         dateButton = findViewById<Button>(R.id.button2) // Replace with your button ID
         dateButton!!.text = todaysDate
+
     }
 
     private val todaysDate: String

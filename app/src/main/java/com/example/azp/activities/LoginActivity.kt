@@ -20,6 +20,7 @@ class LoginActivity: AppCompatActivity() {
     private lateinit var guestButton: Button
 
 
+
     private val authRepository = AuthRepository()
     private val model: AuthViewModel by viewModels {
         AuthViewModelFactory(authRepository)
