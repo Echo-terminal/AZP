@@ -33,7 +33,7 @@ class AddTaskActivity : AppCompatActivity() {
 
         val saveBtn = findViewById<Button>(R.id.button_Save)
         val editTitle = findViewById<TextView>(R.id.editTextTitle)
-        val editDate = findViewById<TextView>(R.id.editTextDate)
+        //val editDate = findViewById<TextView>(R.id.editTextDate)
         val stateToDo = findViewById<CheckBox>(R.id.checkBox2_to_do)
         val stateInProcess = findViewById<CheckBox>(R.id.checkBox1_in_progress)
         val stateComplete = findViewById<CheckBox>(R.id.checkBox4_complete)
@@ -74,15 +74,15 @@ class AddTaskActivity : AppCompatActivity() {
 
         saveBtn.setOnClickListener {
             val taskTitle = editTitle.text.toString()
-            val taskDate = editDate.text.toString()
-            val newTask = Task("", taskTitle, "", selectedState, taskDate)
+            //val taskDate = editDate.text.toString()
+            //val newTask = Task("", taskTitle, "", selectedState, taskDate)
 
             val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
             if (fragment is ListFragment) {
                 fragment.updateAdapterData()
             }
 
-            model.addTask(newTask)
+            //model.addTask(newTask)
 
             finish()
         }
