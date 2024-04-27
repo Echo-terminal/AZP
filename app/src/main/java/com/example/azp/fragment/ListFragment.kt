@@ -1,6 +1,7 @@
 package com.example.azp.fragment
 
 import TaskAdapter
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -15,10 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.azp.R
 import com.example.azp.activities.AddTaskActivity
+import com.example.azp.data_classes.Task
 import com.example.azp.data_classes.TaskState
 import com.example.azp.utilities.TaskFirebaseRepository
 import com.example.azp.utilities.TaskViewModel
 import com.example.azp.utilities.TaskViewModelFactory
+import com.google.gson.Gson
 
 
 class ListFragment : Fragment() {
@@ -28,6 +32,20 @@ class ListFragment : Fragment() {
     private lateinit var recyclerViewInProgress: RecyclerView
     private lateinit var recyclerViewCompleted: RecyclerView
     private lateinit var recyclerViewMilestones: RecyclerView
+
+    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            val json = data?.getStringExtra("json")
+
+            if (json != null) {
+                val gson = Gson()
+                val task = gson.fromJson(json, Task::class.java)
+                taskModel.addTask(task)
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -98,13 +116,17 @@ class ListFragment : Fragment() {
         updateAdapterData()
 
         addButton.setOnClickListener{
-            val intent = Intent(context,AddTaskActivity::class.java)
-            startActivity(intent)
+            val intent = Intent(context, AddTaskActivity::class.java)
+            startForResult.launch(intent)
         }
 
 
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     fun updateAdapterData() {

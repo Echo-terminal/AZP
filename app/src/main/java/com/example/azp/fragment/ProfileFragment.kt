@@ -27,7 +27,7 @@ class ProfileFragment : Fragment() {
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                observeViewModel()
+
             }
         }
     override fun onCreateView(
@@ -62,7 +62,6 @@ class ProfileFragment : Fragment() {
 
         }
     }
-
     private fun observeViewModel() {
         model.getCurrentUser().observe(viewLifecycleOwner) { user ->
             if (user?.isAnonymous==true) emailTextView.text= "You are the Guest"

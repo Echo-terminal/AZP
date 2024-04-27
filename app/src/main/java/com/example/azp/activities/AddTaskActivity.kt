@@ -1,5 +1,7 @@
 package com.example.azp.activities
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
@@ -9,10 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.azp.R
 import com.example.azp.data_classes.Task
 import com.example.azp.data_classes.TaskState
-import com.example.azp.fragment.ListFragment
 import com.example.azp.utilities.TaskFirebaseRepository
 import com.example.azp.utilities.TaskViewModel
 import com.example.azp.utilities.TaskViewModelFactory
+import com.google.gson.Gson
 
 
 class AddTaskActivity : AppCompatActivity() {
@@ -75,15 +77,16 @@ class AddTaskActivity : AppCompatActivity() {
 
         saveBtn.setOnClickListener {
             val taskTitle = editTitle.text.toString()
-            //val taskDate = editDate.text.toString()
-            //val newTask = Task("", taskTitle, "", selectedState, taskDate)
+            val taskDate = ""
+            val newTask = Task("", taskTitle, "", selectedState, taskDate)
 
-            val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
-            if (fragment is ListFragment) {
-                fragment.updateAdapterData()
-            }
+            val resultIntent = Intent()
+            val gson = Gson()
+            val json = gson.toJson(newTask)
 
-            //model.addTask(newTask)
+            resultIntent.putExtra("json", json)
+
+            setResult(Activity.RESULT_OK, resultIntent)
 
             finish()
         }
