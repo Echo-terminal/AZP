@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout2"
+    android:id="@+id/drawer_layout_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ListFragment">
+    tools:context=".activities.ListActivity">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -208,12 +207,6 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <!-- RecyclerView 2 -->
-
-                    <!-- RecyclerView 3 -->
-
-                    <!-- RecyclerView 4 -->
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/constraintLayout3"
                         android:layout_width="360dp"
@@ -302,4 +295,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

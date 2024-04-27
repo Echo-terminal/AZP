@@ -1,50 +1,47 @@
-package com.example.azp.fragment
+package com.example.azp.activities
 
 import TaskAdapter
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.azp.R
-import com.example.azp.activities.AddTaskActivity
 import com.example.azp.data_classes.TaskState
 import com.example.azp.utilities.TaskFirebaseRepository
 import com.example.azp.utilities.TaskViewModel
 import com.example.azp.utilities.TaskViewModelFactory
 
+class ListActivity: AppCompatActivity() {
+    private val taskRepository = TaskFirebaseRepository()
+    private val taskModel: TaskViewModel by viewModels {
+        TaskViewModelFactory(taskRepository)
+    }
 
-class ListFragment : Fragment() {
-
-    private lateinit var taskModel: TaskViewModel
     private lateinit var recyclerViewToDo: RecyclerView
     private lateinit var recyclerViewInProgress: RecyclerView
     private lateinit var recyclerViewCompleted: RecyclerView
     private lateinit var recyclerViewMilestones: RecyclerView
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        val view = inflater.inflate(R.layout.fragment_list, container, false)
+        setContentView(R.layout.activity_list)
 
-        val buttonInProgress = view.findViewById<Button>(R.id.buttonInProgress)
-        val buttonToDo = view.findViewById<Button>(R.id.buttonToDo)
-        val buttonMilestones = view.findViewById<Button>(R.id.buttonMilestones)
-        val buttonComplete = view.findViewById<Button>(R.id.buttonComplete)
+        val buttonInProgress = findViewById<Button>(R.id.buttonInProgress)
+        val buttonToDo = findViewById<Button>(R.id.buttonToDo)
+        val buttonMilestones = findViewById<Button>(R.id.buttonMilestones)
+        val buttonComplete = findViewById<Button>(R.id.buttonComplete)
 
-        val layoutToDo = view.findViewById<ConstraintLayout>(R.id.constraintLayout2)
-        val layoutInProgress = view.findViewById<ConstraintLayout>(R.id.constraintLayout1)
-        val layoutMilestone = view.findViewById<ConstraintLayout>(R.id.constraintLayout3)
-        val layoutComplete = view.findViewById<ConstraintLayout>(R.id.constraintLayout4)
+        val layoutToDo = findViewById<ConstraintLayout>(R.id.constraintLayout2)
+        val layoutInProgress = findViewById<ConstraintLayout>(R.id.constraintLayout1)
+        val layoutMilestone = findViewById<ConstraintLayout>(R.id.constraintLayout3)
+        val layoutComplete = findViewById<ConstraintLayout>(R.id.constraintLayout4)
 
         buttonInProgress.setOnClickListener {
             layoutInProgress.visibility = View.VISIBLE
@@ -76,39 +73,33 @@ class ListFragment : Fragment() {
 
 
 
-        val addButton = view.findViewById<ImageButton>(R.id.addButton1)
+        val addButton = findViewById<ImageButton>(R.id.addButton1)
 
-        recyclerViewInProgress = view.findViewById<RecyclerView>(R.id.recyclerViewInProgress)
-        recyclerViewToDo = view.findViewById<RecyclerView>(R.id.recyclerViewTodo)
-        recyclerViewCompleted = view.findViewById<RecyclerView>(R.id.recyclerViewComplete)
-        recyclerViewMilestones = view.findViewById<RecyclerView>(R.id.recyclerViewMilestones)
+        recyclerViewInProgress = findViewById(R.id.recyclerViewInProgress)
+        recyclerViewToDo = findViewById(R.id.recyclerViewTodo)
+        recyclerViewCompleted = findViewById(R.id.recyclerViewComplete)
+        recyclerViewMilestones = findViewById(R.id.recyclerViewMilestones)
 
-        val layoutManagerToDo = LinearLayoutManager(requireContext())
-        val layoutManagerInProgress = LinearLayoutManager(requireContext())
-        val layoutManagerCompleted = LinearLayoutManager(requireContext())
-        val layoutManagerMilestones = LinearLayoutManager(requireContext())
+        val layoutManagerToDo = LinearLayoutManager(this)
+        val layoutManagerInProgress = LinearLayoutManager(this)
+        val layoutManagerCompleted = LinearLayoutManager(this)
+        val layoutManagerMilestones = LinearLayoutManager(this)
 
         recyclerViewInProgress.layoutManager = layoutManagerInProgress
         recyclerViewToDo.layoutManager = layoutManagerToDo
         recyclerViewCompleted.layoutManager = layoutManagerCompleted
         recyclerViewMilestones.layoutManager = layoutManagerMilestones
 
-        taskModel = ViewModelProvider(this, TaskViewModelFactory(TaskFirebaseRepository()))[TaskViewModel::class.java]
-
         updateAdapterData()
 
         addButton.setOnClickListener{
-            val intent = Intent(context,AddTaskActivity::class.java)
+            val intent = Intent(this,AddTaskActivity::class.java)
             startActivity(intent)
         }
-
-
-
-        return view
     }
 
-    fun updateAdapterData() {
-        taskModel.getAllTasks().observe(viewLifecycleOwner) { tasks ->
+    private fun updateAdapterData() {
+        taskModel.getAllTasks().observe(this) { tasks ->
             val todoTasks = tasks.filter { it.getState() == TaskState.TODO }
             val inProgressTasks = tasks.filter { it.getState() == TaskState.IN_PROGRESS }
             val completedTasks = tasks.filter { it.getState() == TaskState.COMPLETED }
@@ -120,4 +111,5 @@ class ListFragment : Fragment() {
             recyclerViewMilestones.adapter = TaskAdapter(milestoneTasks)
         }
     }
+
 }

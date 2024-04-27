@@ -1,11 +1,9 @@
 package com.example.azp.utilities
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.azp.data_classes.Task
 import com.example.azp.data_classes.User
-import com.google.firebase.auth.EmailAuthCredential
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 
@@ -87,6 +85,7 @@ class AuthRepository {
             }
         }
     }
+
     fun getCurrentUser(): FirebaseUser? {
         return AUTH.currentUser
     }

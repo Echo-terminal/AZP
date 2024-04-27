@@ -25,6 +25,7 @@
         </activity>
         <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.AddTaskActivity" />
+        <activity android:name=".activities.ListActivity" />
     </application>
 
 </manifest>
