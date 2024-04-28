@@ -1,7 +1,6 @@
 package com.example.azp
 
 import ProfileFragment
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -13,11 +12,11 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.example.azp.activities.ListActivity
 import com.example.azp.databinding.ActivityMainBinding
 import com.example.azp.fragment.CalendarFragment
 import com.example.azp.fragment.DocumentsFragment
 import com.example.azp.fragment.GraphsFragment
+import com.example.azp.fragment.ListFragment
 import com.example.azp.fragment.MeetingsFragment
 import com.example.azp.fragment.SettingsFragment
 import com.example.azp.utilities.AuthRepository
@@ -86,7 +85,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //функция открытия страниц
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_list -> openActivity(ListActivity())
+            R.id.nav_list -> openFragment(ListFragment())
             R.id.nav_calendar -> openFragment(CalendarFragment())
             R.id.nav_graphs -> openFragment(GraphsFragment())
             R.id.nav_meetings -> openFragment(MeetingsFragment())
@@ -112,11 +111,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.commit()
-    }
-
-    private fun openActivity(activity: AppCompatActivity) {
-        val intent = Intent(this, activity::class.java)
-        startActivity(intent)
     }
 
     private fun initFields(){
