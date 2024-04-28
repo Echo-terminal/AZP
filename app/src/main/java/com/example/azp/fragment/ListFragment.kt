@@ -1,6 +1,6 @@
 package com.example.azp.fragment
 
-import TaskAdapter
+import TaskDetailsDialogFragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.azp.R
 import com.example.azp.activities.AddTaskActivity
 import com.example.azp.data_classes.Task
+import com.example.azp.data_classes.TaskAdapter
 import com.example.azp.data_classes.TaskState
 import com.example.azp.utilities.TaskFirebaseRepository
 import com.example.azp.utilities.TaskViewModel
@@ -125,21 +126,50 @@ class ListFragment : Fragment() {
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
 
-    fun updateAdapterData() {
+
+    private fun updateAdapterData() {
         taskModel.getAllTasks().observe(viewLifecycleOwner) { tasks ->
             val todoTasks = tasks.filter { it.getState() == TaskState.TODO }
             val inProgressTasks = tasks.filter { it.getState() == TaskState.IN_PROGRESS }
             val completedTasks = tasks.filter { it.getState() == TaskState.COMPLETED }
             val milestoneTasks = tasks.filter { it.getState() == TaskState.MILESTONE }
 
-            recyclerViewInProgress.adapter = TaskAdapter(inProgressTasks)
-            recyclerViewToDo.adapter = TaskAdapter(todoTasks)
-            recyclerViewCompleted.adapter = TaskAdapter(completedTasks)
-            recyclerViewMilestones.adapter = TaskAdapter(milestoneTasks)
+            recyclerViewInProgress.adapter = TaskAdapter(inProgressTasks).apply {
+                setOnItemClickListener { task ->
+
+                    val taskJson = Gson().toJson(task)
+                    val dialogFragment = TaskDetailsDialogFragment.newInstance(taskJson)
+                    dialogFragment.show(parentFragmentManager, "TaskDetailsDialogFragment")
+                }
+            }
+
+            recyclerViewToDo.adapter = TaskAdapter(todoTasks).apply {
+                setOnItemClickListener { task ->
+
+                    val taskJson = Gson().toJson(task)
+                    val dialogFragment = TaskDetailsDialogFragment.newInstance(taskJson)
+                    dialogFragment.show(parentFragmentManager, "TaskDetailsDialogFragment")
+                }
+            }
+
+            recyclerViewCompleted.adapter = TaskAdapter(completedTasks).apply {
+                setOnItemClickListener { task ->
+
+                    val taskJson = Gson().toJson(task)
+                    val dialogFragment = TaskDetailsDialogFragment.newInstance(taskJson)
+                    dialogFragment.show(parentFragmentManager, "TaskDetailsDialogFragment")
+                }
+            }
+            recyclerViewMilestones.adapter = TaskAdapter(milestoneTasks).apply {
+                setOnItemClickListener { task ->
+
+                    val taskJson = Gson().toJson(task)
+                    val dialogFragment = TaskDetailsDialogFragment.newInstance(taskJson)
+                    dialogFragment.show(parentFragmentManager, "TaskDetailsDialogFragment")
+                }
+            }
         }
     }
+
 }
