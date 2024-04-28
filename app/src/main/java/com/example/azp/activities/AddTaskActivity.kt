@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.azp.R
-import com.example.azp.data_classes.Task
 import com.example.azp.data_classes.TaskState
 import com.example.azp.utilities.TaskFirebaseRepository
 import com.example.azp.utilities.TaskViewModel
@@ -36,7 +35,6 @@ class AddTaskActivity : AppCompatActivity() {
 
         val saveBtn = findViewById<Button>(R.id.button_Save)
         val editTitle = findViewById<TextView>(R.id.editTextTitle)
-        //val editDate = findViewById<TextView>(R.id.editTextDate)
         val stateToDo = findViewById<CheckBox>(R.id.checkBox2_to_do)
         val stateInProcess = findViewById<CheckBox>(R.id.checkBox1_in_progress)
         val stateComplete = findViewById<CheckBox>(R.id.checkBox4_complete)
