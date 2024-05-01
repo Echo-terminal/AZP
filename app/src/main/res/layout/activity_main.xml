@@ -58,7 +58,8 @@
             android:src="@drawable/images"
             android:clipToOutline="true"
             android:background="@drawable/circle_background"
-            android:layout_margin="20dp"/>
+            android:layout_margin="20dp"
+            />
 
         <TextView
             android:layout_width="match_parent"

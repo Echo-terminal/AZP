@@ -17,7 +17,7 @@ class DateItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task) // Replace with your layout
         initDatePicker()
-        dateButton = findViewById<Button>(R.id.button2) // Replace with your button ID
+        dateButton = findViewById<Button>(R.id.datePickerButton) // Replace with your button ID
         dateButton!!.text = todaysDate
 
     }

@@ -128,7 +128,7 @@ class ListFragment : Fragment() {
 
 
 
-    private fun updateAdapterData() {
+    fun updateAdapterData() {
         taskModel.getAllTasks().observe(viewLifecycleOwner) { tasks ->
             val todoTasks = tasks.filter { it.getState() == TaskState.TODO }
             val inProgressTasks = tasks.filter { it.getState() == TaskState.IN_PROGRESS }
