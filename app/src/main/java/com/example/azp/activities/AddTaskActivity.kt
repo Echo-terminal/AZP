@@ -89,7 +89,8 @@ class AddTaskActivity : AppCompatActivity() {
         saveBtn.setOnClickListener {
             val taskTitle = editTitle.text.toString()
             val taskDate = dateButton.text.toString()
-            val newTask = Task("", taskTitle, "", selectedState, taskDate)
+            val taskDescription = editTextDescription.text.toString()
+            val newTask = Task("", taskTitle, taskDescription, selectedState, taskDate)
             val resultIntent = Intent()
             val gson = Gson()
             val json = gson.toJson(newTask)
