@@ -105,8 +105,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/transparent"
-                android:onClick="previousMonthAction"
-                android:text="{"
+                android:id="@+id/previousMonthAction"
+                android:text="@string/back"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold">
@@ -130,8 +130,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/transparent"
-                android:onClick="nextMonthAction"
-                android:text="->"
+                android:id="@+id/nextMonthAction"
+                android:text="@string/forward"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold">
@@ -155,7 +155,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="SU"
+                android:text="SUN"
                 android:textAlignment="center"
                 android:textColor="@color/grey"
                 android:textSize="15sp"
@@ -168,7 +168,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="MO"
+                android:text="MON"
                 android:textAlignment="center"
                 android:textColor="@color/grey"
                 android:textSize="15sp"
@@ -181,7 +181,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TU"
+                android:text="TUE"
                 android:textAlignment="center"
                 android:textColor="@color/grey"
                 android:textSize="15sp"
@@ -194,7 +194,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="WE"
+                android:text="WED"
                 android:textAlignment="center"
                 android:textColor="@color/grey"
                 android:textSize="15sp"
@@ -207,7 +207,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TH"
+                android:text="THU"
                 android:textAlignment="center"
                 android:textColor="@color/grey"
                 android:textSize="15sp"
@@ -220,7 +220,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="FR"
+                android:text="FRI"
                 android:textAlignment="center"
                 android:textColor="@color/grey"
                 android:textSize="15sp"
@@ -233,7 +233,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="SA"
+                android:text="SAT"
                 android:textAlignment="center"
                 android:textColor="@color/grey"
                 android:textSize="15sp"
@@ -244,18 +244,20 @@
 
         </LinearLayout>
 
+
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="360dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="26dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="25dp"
+            android:id="@+id/calendarRecyclerView"
+            android:layout_width="384dp"
+            android:layout_height="280dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="34dp"
+            android:layout_marginEnd="20dp"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout5"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.555"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-            app:layout_constraintVertical_bias="0.258" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -271,17 +273,19 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout5"
-            android:layout_width="364dp"
-            android:layout_height="450dp"
+            android:layout_width="373dp"
+            android:layout_height="308dp"
+            android:layout_marginTop="11dp"
+            android:layout_marginBottom="36dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.489"
+            app:layout_constraintHorizontal_bias="0.483"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_bias="0.877">
+            app:layout_constraintTop_toBottomOf="@+id/calendarRecyclerView">
 
             <ScrollView
                 android:layout_width="310dp"
-                android:layout_height="450dp"
+                android:layout_height="308dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
