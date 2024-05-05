@@ -42,10 +42,10 @@ class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : Vi
         }
     }
 
-    fun getAllTasksSortedByDate(callback: (List<Task>) -> Unit) {
+    fun getAllSortedTasksOfMonth(month: Int, callback: (List<Task>) -> Unit) {
         firebaseRepository.getAllTasks(object : TaskFirebaseRepositoryCallback<Task> {
             override fun onSuccess(result: List<Task>) {
-                val sortedTasks = result.sortedBy { it.getDueDate().toString() }
+                val sortedTasks = result.filter { it.getDueDate().getMonth() == month }.sortedBy { it.getDueDate().toString() }
                 callback(sortedTasks)
             }
 

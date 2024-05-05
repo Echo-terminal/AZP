@@ -2,23 +2,21 @@
 package com.example.azp.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.azp.R
 import com.example.azp.data_classes.Date
-import com.example.azp.data_classes.Task
 import com.example.azp.utilities.CalendarAdapter
 import com.example.azp.utilities.OnItemListener
+import com.example.azp.utilities.TaskAdapter
 import com.example.azp.utilities.TaskFirebaseRepository
 import com.example.azp.utilities.TaskViewModel
 import com.example.azp.utilities.TaskViewModelFactory
@@ -34,6 +32,7 @@ class CalendarFragment : Fragment(), OnItemListener {
     private lateinit var calendarAdapter: CalendarAdapter
     private lateinit var taskModel: TaskViewModel
     private var selectedDate = LocalDate.now()
+    private lateinit var taskList: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +56,26 @@ class CalendarFragment : Fragment(), OnItemListener {
 
         setMonthView()
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        taskList = view.findViewById<RecyclerView>(R.id.taskListOfMonth)
+        val layoutManager = LinearLayoutManager(requireContext())
+        taskList.layoutManager = layoutManager
+        observeTaskList()
+    }
+
+    private fun observeTaskList(){
+        taskModel.getAllSortedTasksOfMonth(selectedDate.monthValue){tasks ->
+            taskList.adapter = TaskAdapter(tasks).apply {
+                setOnItemClickListener {task ->
+                    val taskJson = Gson().toJson(task)
+                    val dialogFragment = TaskDetailsDialogFragment.newInstance(taskJson)
+                    dialogFragment.show(parentFragmentManager, "TaskDetailsDialogFragment")
+                }
+            }
+        }
     }
 
     private fun initWidgets(view: View) {
@@ -99,7 +118,7 @@ class CalendarFragment : Fragment(), OnItemListener {
 
     override fun onItemClick(position: Int, dayText: String) {
         if (dayText.isNotEmpty()) {
-            val selectedDateFormat: Date = Date(selectedDate.year, selectedDate.monthValue, dayText.toInt())
+            val selectedDateFormat = Date(selectedDate.year, selectedDate.monthValue, dayText.toInt())
             val dateJson = Gson().toJson(selectedDateFormat)
             val dialogFragment = DateDetailsDialogFragment.newInstance(dateJson)
             dialogFragment.show(parentFragmentManager, "DateDetailsDialogFragment")
@@ -109,11 +128,14 @@ class CalendarFragment : Fragment(), OnItemListener {
     private fun previousMonthAction() {
         selectedDate = selectedDate.minusMonths(1)
         setMonthView()
+        observeTaskList()
     }
 
     private fun nextMonthAction() {
         selectedDate = selectedDate.plusMonths(1)
         setMonthView()
+        observeTaskList()
     }
+
 }
 

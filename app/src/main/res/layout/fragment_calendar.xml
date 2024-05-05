@@ -6,7 +6,7 @@
     android:id="@+id/drawer_layout3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CalendarFragment">
+    tools:context=".fragment.CalendarFragment">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -293,7 +293,7 @@
                 app:layout_constraintVertical_bias="0.0">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView2"
+                    android:id="@+id/taskListOfMonth"
                     android:layout_width="310dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">

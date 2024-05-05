@@ -34,6 +34,10 @@ class Date() {
         return true
     }
 
+    fun getMonth(): Int{
+        return month
+    }
+
     companion object {
         fun now(): Date {
             val cal = Calendar.getInstance()
