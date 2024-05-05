@@ -53,14 +53,17 @@ android {
     }
 }
 
+
+
 dependencies {
+
+    implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(platform(libs.firebase.bom))
-    //noinspection UseTomlInstead
     implementation("com.google.firebase:firebase-analytics")
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -81,4 +84,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+
 }
+

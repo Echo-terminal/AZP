@@ -1,5 +1,6 @@
 package com.example.azp.utilities
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,6 +29,18 @@ class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : Vi
         return _tasks
     }
 
+    fun getTaskType(callback: (List<Int>) -> Unit) {
+        val listLiveData = mutableListOf<Int>()
+        firebaseRepository.getTaskTypes { task ->
+            listLiveData.add(task[0])
+            listLiveData.add(task[1])
+            listLiveData.add(task[2])
+            listLiveData.add(task[3])
+            Log.d("da111s", listLiveData.toString())
+            callback(listLiveData)
+        }
+    }
+
     fun addTask(task: Task) {
         firebaseRepository.add(task, object : TaskFirebaseRepositoryCallback<Task> {
             override fun onSuccess(result: List<Task>) {
@@ -40,6 +53,7 @@ class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : Vi
             }
         })
     }
+
 
     fun updateTask(task: Task) {
         firebaseRepository.update(task, object : TaskFirebaseRepositoryCallback<Task> {
