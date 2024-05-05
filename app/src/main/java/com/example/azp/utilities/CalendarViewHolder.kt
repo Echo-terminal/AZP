@@ -1,4 +1,4 @@
-package com.example.azp.fragment
+package com.example.azp.utilities
 
 import android.view.View
 import android.widget.TextView

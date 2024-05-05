@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.azp.data_classes.Date
 import com.example.azp.data_classes.Task
 
 class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : ViewModel() {
@@ -40,6 +41,39 @@ class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : Vi
             callback(listLiveData)
         }
     }
+
+    fun getAllTasksSortedByDate(callback: (List<Task>) -> Unit) {
+        firebaseRepository.getAllTasks(object : TaskFirebaseRepositoryCallback<Task> {
+            override fun onSuccess(result: List<Task>) {
+                val sortedTasks = result.sortedBy { it.getDueDate().toString() }
+                callback(sortedTasks)
+            }
+
+            override fun onError(e: Exception) {
+                e.printStackTrace()
+            }
+        })
+    }
+
+
+    fun getAllTasksByDate(date: Date, callback: (List<Task>) -> Unit) {
+        firebaseRepository.getAllTasks(object : TaskFirebaseRepositoryCallback<Task> {
+            override fun onSuccess(result: List<Task>) {
+                val tasksForDate = mutableListOf<Task>()
+                for (task in result) {
+                    if (task.getDueDate() == date) {
+                        tasksForDate.add(task)
+                    }
+                }
+                callback(tasksForDate)
+            }
+
+            override fun onError(e: Exception) {
+                e.printStackTrace()
+            }
+        })
+    }
+
 
     fun addTask(task: Task) {
         firebaseRepository.add(task, object : TaskFirebaseRepositoryCallback<Task> {

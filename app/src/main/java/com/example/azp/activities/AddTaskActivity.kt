@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.azp.R
+import com.example.azp.data_classes.Date
 import com.example.azp.data_classes.Task
 import com.example.azp.data_classes.TaskState
 import com.example.azp.utilities.TaskFirebaseRepository
@@ -31,6 +32,7 @@ class AddTaskActivity : AppCompatActivity() {
 
     private lateinit var datePickerDialog: DatePickerDialog
     private lateinit var dateButton: Button
+    private lateinit var taskDate: Date
     private var selectedState:TaskState = TaskState.TODO
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,7 @@ class AddTaskActivity : AppCompatActivity() {
 
         initDatePicker()
         dateButton = findViewById(R.id.datePickerButton) // Найдем кнопку по ее id
-        dateButton.text = getTodaysDate()
+        dateButton.text = getTodayDate().toString()
 
         val cancelBtn = findViewById<Button>(R.id.button_Cancel)
         cancelBtn.setOnClickListener {
@@ -88,7 +90,6 @@ class AddTaskActivity : AppCompatActivity() {
 
         saveBtn.setOnClickListener {
             val taskTitle = editTitle.text.toString()
-            val taskDate = dateButton.text.toString()
             val taskDescription = editTextDescription.text.toString()
             val newTask = Task("", taskTitle, taskDescription, selectedState, taskDate)
             val resultIntent = Intent()
@@ -100,20 +101,20 @@ class AddTaskActivity : AppCompatActivity() {
         }
     }
 
-    private fun getTodaysDate(): String {
+    private fun getTodayDate(): Date {
         val cal = Calendar.getInstance()
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH) + 1
         val day = cal.get(Calendar.DAY_OF_MONTH)
-        return makeDateString(day, month, year)
+        return Date(year, month, day)
     }
 
     private fun initDatePicker() {
         val dateSetListener =
-            DatePickerDialog.OnDateSetListener { datePicker: DatePicker, year: Int, month: Int, day: Int ->
+            DatePickerDialog.OnDateSetListener { _: DatePicker, year: Int, month: Int, day: Int ->
                 val adjustedMonth = month + 1
-                val date = makeDateString(day, adjustedMonth, year)
-                dateButton.text = date
+                taskDate = Date(year, adjustedMonth, day) // Создаем объект Date
+                dateButton.text = taskDate.toString() // Устанавливаем выбранную дату на кнопку
             }
 
         val cal = Calendar.getInstance()
@@ -124,28 +125,6 @@ class AddTaskActivity : AppCompatActivity() {
         val style = AlertDialog.THEME_HOLO_LIGHT
 
         datePickerDialog = DatePickerDialog(this, style, dateSetListener, year, month, day)
-    }
-
-    private fun makeDateString(day: Int, month: Int, year: Int): String {
-        return getMonthFormat(month) + " " + day + " " + year
-    }
-
-    private fun getMonthFormat(month: Int): String {
-        return when (month) {
-            1 -> "JAN"
-            2 -> "FEB"
-            3 -> "MAR"
-            4 -> "APR"
-            5 -> "MAY"
-            6 -> "JUN"
-            7 -> "JUL"
-            8 -> "AUG"
-            9 -> "SEP"
-            10 -> "OCT"
-            11 -> "NOV"
-            12 -> "DEC"
-            else -> "JAN" // default should never happen
-        }
     }
 
     fun openDatePicker(view: View) {

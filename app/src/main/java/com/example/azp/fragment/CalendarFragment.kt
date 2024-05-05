@@ -2,6 +2,7 @@
 package com.example.azp.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +10,19 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.azp.R
+import com.example.azp.data_classes.Date
+import com.example.azp.data_classes.Task
+import com.example.azp.utilities.CalendarAdapter
+import com.example.azp.utilities.OnItemListener
+import com.example.azp.utilities.TaskFirebaseRepository
+import com.example.azp.utilities.TaskViewModel
+import com.example.azp.utilities.TaskViewModelFactory
+import com.google.gson.Gson
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -21,6 +32,7 @@ class CalendarFragment : Fragment(), OnItemListener {
     private lateinit var monthYearText: TextView
     private lateinit var calendarRecyclerView: RecyclerView
     private lateinit var calendarAdapter: CalendarAdapter
+    private lateinit var taskModel: TaskViewModel
     private var selectedDate = LocalDate.now()
 
     override fun onCreateView(
@@ -30,6 +42,7 @@ class CalendarFragment : Fragment(), OnItemListener {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_calendar, container, false)
         initWidgets(view)
+        taskModel = ViewModelProvider(this, TaskViewModelFactory(TaskFirebaseRepository()))[TaskViewModel::class.java]
 
         val previousButton = view.findViewById<Button>(R.id.previousMonthAction)
         val nextButton = view.findViewById<Button>(R.id.nextMonthAction)
@@ -86,8 +99,10 @@ class CalendarFragment : Fragment(), OnItemListener {
 
     override fun onItemClick(position: Int, dayText: String) {
         if (dayText.isNotEmpty()) {
-            val message = "Selected Date: $dayText ${monthYearFromDate(selectedDate)}"
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            val selectedDateFormat: Date = Date(selectedDate.year, selectedDate.monthValue, dayText.toInt())
+            val dateJson = Gson().toJson(selectedDateFormat)
+            val dialogFragment = DateDetailsDialogFragment.newInstance(dateJson)
+            dialogFragment.show(parentFragmentManager, "DateDetailsDialogFragment")
         }
     }
 

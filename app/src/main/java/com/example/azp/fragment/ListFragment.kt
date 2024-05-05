@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.azp.R
 import com.example.azp.activities.AddTaskActivity
 import com.example.azp.data_classes.Task
-import com.example.azp.data_classes.TaskAdapter
+import com.example.azp.utilities.TaskAdapter
 import com.example.azp.data_classes.TaskState
 import com.example.azp.utilities.TaskFirebaseRepository
 import com.example.azp.utilities.TaskViewModel

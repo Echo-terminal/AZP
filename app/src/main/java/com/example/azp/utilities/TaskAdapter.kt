@@ -1,4 +1,4 @@
-package com.example.azp.data_classes
+package com.example.azp.utilities
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.azp.R
+import com.example.azp.data_classes.Task
 
 class TaskAdapter(private val tasks: List<Task>) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
@@ -28,7 +29,7 @@ class TaskAdapter(private val tasks: List<Task>) : RecyclerView.Adapter<TaskAdap
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val currentTask = tasks[position]
         holder.titleTextView.text = currentTask.getTitle()
-        holder.dateTextView.text = currentTask.getDueDate()
+        holder.dateTextView.text = currentTask.getDueDate().toString()
 
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(currentTask)

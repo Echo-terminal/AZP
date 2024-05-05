@@ -47,7 +47,7 @@ class TaskDetailsDialogFragment : DialogFragment() {
 
     private fun displayTaskDetails(task: Task) {
         binding.taskDetailsTitle.text = task.getTitle()
-        binding.taskDetailsDate.text = task.getDueDate()
+        binding.taskDetailsDate.text = task.getDueDate().toString()
         binding.taskDetailsDescription.text = task.getDescription()
     }
 
