@@ -92,7 +92,7 @@ class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : Vi
     fun updateTask(task: Task) {
         firebaseRepository.update(task, object : TaskFirebaseRepositoryCallback<Task> {
             override fun onSuccess(result: List<Task>) {
-                getAllTasks() // Refresh task list after updating
+                //getAllTasks() // Refresh task list after updating
             }
 
             override fun onError(e: Exception) {

@@ -1,5 +1,7 @@
 package com.example.azp.data_classes
 
+import android.icu.text.CaseMap.Title
+
 
 enum class TaskState {
     TODO,
@@ -38,4 +40,21 @@ class Task(
     fun setId(newId: String){
         id = newId
     }
+
+    fun setTitle(newTitle: String){
+        title = newTitle
+    }
+
+    fun setDescription(newDescription: String){
+        description = newDescription
+    }
+
+    fun setDate(newDate: Date){
+        dueDate = newDate
+    }
+
+    fun  setTaskState(newState: TaskState){
+        state = newState
+    }
+
 }
