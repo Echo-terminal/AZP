@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -128,7 +129,7 @@ class ListFragment : Fragment() {
 
 
 
-    fun updateAdapterData() {
+    private fun updateAdapterData() {
         taskModel.getAllTasks().observe(viewLifecycleOwner) { tasks ->
             val todoTasks = tasks.filter { it.getState() == TaskState.TODO }
             val inProgressTasks = tasks.filter { it.getState() == TaskState.IN_PROGRESS }

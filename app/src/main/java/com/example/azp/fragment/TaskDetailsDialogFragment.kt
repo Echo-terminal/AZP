@@ -52,6 +52,7 @@ class TaskDetailsDialogFragment : DialogFragment() {
         val taskJson = arguments?.getString(ARG_TASK_JSON)
         val gson = Gson()
         val task = gson.fromJson(taskJson, Task::class.java)
+        taskDate = task.getDueDate()
         viewModel = ViewModelProvider(this, TaskViewModelFactory(TaskFirebaseRepository()))[TaskViewModel::class.java]
         task?.let { displayTaskDetails(it) }
         binding.buttonCompleted.setOnClickListener{

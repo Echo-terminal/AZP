@@ -7,7 +7,8 @@ enum class TaskState {
     TODO,
     IN_PROGRESS,
     COMPLETED,
-    MILESTONE
+    MILESTONE,
+    NONE
 }
 
 class Task(

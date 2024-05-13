@@ -10,8 +10,10 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.azp.R
 import com.example.azp.data_classes.Date
 import com.example.azp.data_classes.Task
@@ -25,22 +27,22 @@ import java.util.Calendar
 
 class AddTaskActivity : AppCompatActivity() {
 
-    private val taskRepository = TaskFirebaseRepository()
-    private val model: TaskViewModel by viewModels {
-        TaskViewModelFactory(taskRepository)
-    }
-
+    private lateinit var taskDateTextView: TextView
     private lateinit var datePickerDialog: DatePickerDialog
-    private lateinit var dateButton: Button
     private lateinit var taskDate: Date
-    private var selectedState:TaskState = TaskState.TODO
+    private var selectedState:TaskState = TaskState.NONE
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
+        taskDate = Date.now()
 
         initDatePicker()
-        dateButton = findViewById(R.id.datePickerButton) // Найдем кнопку по ее id
-        dateButton.text = getTodayDate().toString()
+        taskDateTextView = findViewById(R.id.currentDate)
+
+        taskDateTextView.text = taskDate.toString()
+        taskDateTextView.setOnClickListener {
+            openDatePicker()
+        }
 
         val cancelBtn = findViewById<Button>(R.id.button_Cancel)
         cancelBtn.setOnClickListener {
@@ -96,8 +98,12 @@ class AddTaskActivity : AppCompatActivity() {
             val gson = Gson()
             val json = gson.toJson(newTask)
             resultIntent.putExtra("json", json)
-            setResult(Activity.RESULT_OK, resultIntent)
-            finish()
+            if(taskTitle != "" && selectedState != TaskState.NONE){
+                setResult(Activity.RESULT_OK, resultIntent)
+                finish()
+            } else {
+                Toast.makeText(this, "Empty task", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -114,7 +120,7 @@ class AddTaskActivity : AppCompatActivity() {
             DatePickerDialog.OnDateSetListener { _: DatePicker, year: Int, month: Int, day: Int ->
                 val adjustedMonth = month + 1
                 taskDate = Date(year, adjustedMonth, day) // Создаем объект Date
-                dateButton.text = taskDate.toString() // Устанавливаем выбранную дату на кнопку
+                taskDateTextView.text = taskDate.toString() // Устанавливаем выбранную дату на кнопку
             }
 
         val cal = Calendar.getInstance()
@@ -127,7 +133,7 @@ class AddTaskActivity : AppCompatActivity() {
         datePickerDialog = DatePickerDialog(this, style, dateSetListener, year, month, day)
     }
 
-    fun openDatePicker(view: View) {
+    private fun openDatePicker() {
         datePickerDialog.show()
     }
 

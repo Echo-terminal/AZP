@@ -69,6 +69,7 @@ class TaskFirebaseRepository :
                     TaskState.IN_PROGRESS -> taskTypeList[1]++
                     TaskState.MILESTONE -> taskTypeList[2]++
                     TaskState.COMPLETED -> taskTypeList[3]++
+                    TaskState.NONE -> TODO()
                 }
             }
             Log.d("Tasssss", taskTypeList.toString())

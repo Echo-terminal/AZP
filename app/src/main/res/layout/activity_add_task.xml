@@ -58,18 +58,17 @@
 
 
     <CheckBox
-        android:id="@+id/checkBox1_in_progress"
+        android:id="@+id/checkBox3_milestones"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="94dp"
-        android:layout_marginEnd="211dp"
-        android:text="In progress"
-        app:layout_constraintBottom_toTopOf="@+id/checkBox2_to_do"
+        android:layout_marginEnd="214dp"
+        android:layout_marginBottom="12dp"
+        android:text="Milestones"
+        app:layout_constraintBottom_toTopOf="@+id/checkBox4_complete"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskDate"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <CheckBox
         android:id="@+id/checkBox2_to_do"
@@ -77,25 +76,25 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="94dp"
         android:layout_marginEnd="249dp"
+        android:layout_marginBottom="16dp"
         android:text="To do"
         app:layout_constraintBottom_toTopOf="@+id/checkBox3_milestones"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskDate"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <CheckBox
-        android:id="@+id/checkBox3_milestones"
+        android:id="@+id/checkBox1_in_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="94dp"
-        android:layout_marginEnd="214dp"
-        android:text="Milestones"
-        app:layout_constraintBottom_toTopOf="@+id/checkBox4_complete"
+        android:layout_marginEnd="211dp"
+        android:layout_marginBottom="32dp"
+        android:text="In progress"
+        app:layout_constraintBottom_toTopOf="@+id/checkBox2_to_do"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskDate"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <CheckBox
         android:id="@+id/checkBox4_complete"
@@ -103,62 +102,33 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="94dp"
         android:layout_marginEnd="223dp"
+        android:layout_marginBottom="176dp"
         android:text="Complete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskDate" />
-
-    <TextView
-        android:id="@+id/taskDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:layout_marginBottom="16dp"
-        android:hint="Date"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.272"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.35" />
-
-    <Button
-        android:id="@+id/datePickerButton"
-        style="?android:spinnerStyle"
-        android:layout_width="27dp"
-        android:layout_height="20dp"
-        android:layout_marginBottom="-5dp"
-        android:onClick="openDatePicker"
-        android:text="Select Date"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.055"
-        app:layout_constraintStart_toEndOf="@+id/taskDate"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.36" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <androidx.cardview.widget.CardView
-        android:layout_width="103dp"
-        android:layout_height="22dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.111"
-        app:layout_constraintStart_toEndOf="@+id/datePickerButton"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextDescription"
-        app:layout_constraintVertical_bias="0.07"
-        app:cardCornerRadius="15dp">
+        app:layout_constraintVertical_bias="0.07">
 
         <TextView
             android:id="@+id/currentDate"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="data"
-            android:textSize="14dp"
             android:textAlignment="center"
             android:textColor="@color/black"
+            android:textSize="24dp"
             tools:layout_editor_absoluteX="-211dp"
             tools:layout_editor_absoluteY="538dp">
 
