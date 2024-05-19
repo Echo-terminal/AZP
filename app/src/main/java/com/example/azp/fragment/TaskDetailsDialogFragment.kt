@@ -1,5 +1,6 @@
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
@@ -20,12 +21,18 @@ import com.google.gson.Gson
 import java.util.Calendar
 
 class TaskDetailsDialogFragment : DialogFragment() {
-    private lateinit var viewModel: TaskViewModel
+
     private var _binding: TaskDetailsFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var datePickerDialog: DatePickerDialog
-    private lateinit var dateButton: Button
     private lateinit var taskDate: Date
+
+    interface TaskDetailsListener {
+        fun onTaskUpdated(task: Task)
+        fun onTaskDeleted(taskId: String)
+    }
+
+    private var listener: TaskDetailsListener? = null
 
     companion object {
         private const val ARG_TASK_JSON = "task_json"
@@ -36,6 +43,14 @@ class TaskDetailsDialogFragment : DialogFragment() {
             args.putString(ARG_TASK_JSON, taskJson)
             fragment.arguments = args
             return fragment
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        listener = targetFragment as? TaskDetailsListener
+        if (listener == null) {
+            throw ClassCastException("$context must implement TaskDetailsListener")
         }
     }
 
@@ -53,20 +68,19 @@ class TaskDetailsDialogFragment : DialogFragment() {
         val gson = Gson()
         val task = gson.fromJson(taskJson, Task::class.java)
         taskDate = task.getDueDate()
-        viewModel = ViewModelProvider(this, TaskViewModelFactory(TaskFirebaseRepository()))[TaskViewModel::class.java]
         task?.let { displayTaskDetails(it) }
         binding.buttonCompleted.setOnClickListener{
             task.setTaskState(TaskState.COMPLETED)
-            viewModel.updateTask(task)
+            listener?.onTaskUpdated(task) // Передача данных
             dismiss()
         }
         binding.buttonSave.setOnClickListener{
-            val title = binding.taskDetailsTitle.text
-            val description = binding.taskDetailsDescription.text
-            if (task.getTitle()!=title.toString()) task.setTitle(title.toString())
-            if (task.getDescription()!=description.toString()) task.setDescription(description.toString())
-            if (task.getDueDate()!=taskDate) task.setDate(taskDate)
-            viewModel.updateTask(task)
+            val title = binding.taskDetailsTitle.text.toString()
+            val description = binding.taskDetailsDescription.text.toString()
+            if (task.getTitle() != title) task.setTitle(title)
+            if (task.getDescription() != description) task.setDescription(description)
+            if (task.getDueDate() != taskDate) task.setDate(taskDate)
+            listener?.onTaskUpdated(task) // Передача данных
             dismiss()
         }
         initDatePicker() // Инициализация DatePicker
@@ -74,10 +88,9 @@ class TaskDetailsDialogFragment : DialogFragment() {
             openDatePicker(it) // Открытие DatePicker
         }
         binding.buttonDelete.setOnClickListener{
-            viewModel.deleteTask(task.getId())
+            listener?.onTaskDeleted(task.getId()) // Передача данных
             dismiss()
         }
-        // Установка обработчика для кнопки закрытия диалогового окна
     }
 
     private fun displayTaskDetails(task: Task) {
