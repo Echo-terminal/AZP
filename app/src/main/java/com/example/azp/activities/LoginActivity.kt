@@ -51,7 +51,7 @@ class LoginActivity: AppCompatActivity() {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
 
-            model.createUser(email, password)
+            model.fromGuestToUser(email, password)
 
             val resultIntent = Intent()
             setResult(Activity.RESULT_OK, resultIntent)

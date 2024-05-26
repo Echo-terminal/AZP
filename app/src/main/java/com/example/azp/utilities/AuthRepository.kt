@@ -10,10 +10,33 @@ import com.google.firebase.auth.FirebaseUser
 class AuthRepository {
 
     fun signInWithEmailAndPassword(email: String, password: String){
+        val tasksList = MutableLiveData<List<Task>>()
+        val taskRepository=TaskFirebaseRepository()
+        taskRepository.getAllTasks(object : TaskFirebaseRepositoryCallback<Task> {
+            override fun onSuccess(result: List<Task>) {
+                tasksList.value = result
+            }
+            override fun onError(e: Exception) {
+                // Handle error
+                e.printStackTrace()
+            }
+        })
         AUTH.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener { authResult ->
                 UID = authResult.user?.uid.toString()
                 Log.d("AuthRepository", "signInWithEmailAndPassword: $authResult")
+                tasksList.value?.forEach { task ->
+                    taskRepository.add(task, object : TaskFirebaseRepositoryCallback<Task>{
+                        override fun onSuccess(result: List<Task>) {
+                            Log.d("add","succes")
+                        }
+
+                        override fun onError(e: Exception) {
+                            // Handle error
+                            e.printStackTrace()
+                        }
+                    })
+                }
             }
             .addOnFailureListener { exception ->
                 Log.e("AuthRepository", "signInWithEmailAndPassword: ${exception.message}")
@@ -48,11 +71,11 @@ class AuthRepository {
 
     fun fromGuestToUser(email: String, password: String){
         val uid = AUTH.uid
-        val taskslist = MutableLiveData<List<Task>>()
+        val tasksList = MutableLiveData<List<Task>>()
         val taskRepository=TaskFirebaseRepository()
         taskRepository.getAllTasks(object : TaskFirebaseRepositoryCallback<Task> {
             override fun onSuccess(result: List<Task>) {
-                taskslist.value = result
+                tasksList.value = result
             }
             override fun onError(e: Exception) {
                 // Handle error
@@ -67,7 +90,7 @@ class AuthRepository {
                 UID = uid.toString()
                 val user = User(UID,email,email)
                 REF_DATABASE_ROOT.child(NODE_USER).child(UID).setValue(user)
-                taskslist.value?.forEach { task ->
+                tasksList.value?.forEach { task ->
                     taskRepository.add(task, object : TaskFirebaseRepositoryCallback<Task>{
                         override fun onSuccess(result: List<Task>) {
                             Log.d("add","succes")
@@ -81,7 +104,7 @@ class AuthRepository {
                 }
             }
             else {
-
+                task.exception?.printStackTrace()
             }
         }
     }
