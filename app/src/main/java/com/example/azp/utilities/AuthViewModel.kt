@@ -35,11 +35,9 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         authRepository.signOut()
         _userLiveData.value = null
     }
-    fun fromGuesttoUser(email: String,password: String)
-    {
+    fun fromGuestToUser(email: String,password: String) {
         authRepository.fromGuestToUser(email,password)
     }
-
 
 }
 
