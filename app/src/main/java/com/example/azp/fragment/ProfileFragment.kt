@@ -40,6 +40,9 @@ class ProfileFragment : Fragment() {
         model = ViewModelProvider(this, viewModelFactory)[AuthViewModel::class.java]
         observeViewModel()
 
+
+
+
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 

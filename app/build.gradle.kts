@@ -57,6 +57,9 @@ android {
 
 dependencies {
 
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation(libs.androidx.core.ktx)
