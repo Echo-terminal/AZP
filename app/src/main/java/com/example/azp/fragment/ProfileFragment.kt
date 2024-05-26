@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.azp.R
 import com.example.azp.activities.LoginActivity
+import com.example.azp.databinding.ActivityMainBinding
 import com.example.azp.utilities.AuthRepository
 import com.example.azp.utilities.AuthViewModel
 import com.example.azp.utilities.AuthViewModelFactory

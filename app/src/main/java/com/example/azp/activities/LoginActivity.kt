@@ -8,6 +8,7 @@ import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.azp.R
+import com.example.azp.databinding.ActivityMainBinding
 import com.example.azp.utilities.AuthRepository
 import com.example.azp.utilities.AuthViewModel
 import com.example.azp.utilities.AuthViewModelFactory
@@ -18,7 +19,6 @@ class LoginActivity: AppCompatActivity() {
     private lateinit var loginButton: Button
     private lateinit var signupButton: Button
     private lateinit var guestButton: Button
-
 
 
     private val authRepository = AuthRepository()
@@ -52,6 +52,7 @@ class LoginActivity: AppCompatActivity() {
             val password = passwordEditText.text.toString().trim()
 
             model.fromGuestToUser(email, password)
+
 
             val resultIntent = Intent()
             setResult(Activity.RESULT_OK, resultIntent)

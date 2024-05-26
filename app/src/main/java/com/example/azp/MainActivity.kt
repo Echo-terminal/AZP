@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             AuthViewModelFactory(authRepository)
         }
         val user=model.checkUser()
-        Log.d("ProfileFrag", "$UID")
+        Log.d("ProfileFrag", UID)
         if(!user){
             model.guestUser()
         }
@@ -68,6 +68,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
             } else {
+
+                binding.profileEmail.text = model.getCurrentUser().value?.email.toString()
                 binding.drawerLayout.openDrawer(GravityCompat.START)
             }
         }
@@ -77,9 +79,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             openFragment(ProfileFragment())
             binding.drawerLayout.closeDrawer(GravityCompat.START)
         }
-
-       val imageView1 : ImageView = findViewById(R.id.imageView2)
-
     }
 
     //функция открытия страниц
@@ -90,7 +89,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_graphs -> openFragment(GraphsFragment())
             R.id.nav_meetings -> openFragment(MeetingsFragment())
             R.id.nav_documents -> openFragment(DocumentsFragment())
-            R.id.nav_profile -> openFragment(ProfileFragment())
             R.id.nav_settings -> openFragment(SettingsFragment())
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START)

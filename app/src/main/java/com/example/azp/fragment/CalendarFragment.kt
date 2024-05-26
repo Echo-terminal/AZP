@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.azp.R
 import com.example.azp.data_classes.Date
+import com.example.azp.data_classes.Task
 import com.example.azp.utilities.CalendarAdapter
 import com.example.azp.utilities.OnItemListener
 import com.example.azp.utilities.TaskAdapter
@@ -25,7 +26,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
-class CalendarFragment : Fragment(), OnItemListener {
+class CalendarFragment : Fragment(), OnItemListener, TaskDetailsDialogFragment.TaskDetailsListener {
 
     private lateinit var monthYearText: TextView
     private lateinit var calendarRecyclerView: RecyclerView
@@ -72,8 +73,8 @@ class CalendarFragment : Fragment(), OnItemListener {
                 setOnItemClickListener {task ->
                     val taskJson = Gson().toJson(task)
                     val dialogFragment = TaskDetailsDialogFragment.newInstance(taskJson)
-                    dialogFragment.show(parentFragmentManager, "TaskDetailsDialogFragment")
-                }
+                    dialogFragment.setTargetFragment(this@CalendarFragment, 0)
+                    dialogFragment.show(parentFragmentManager, "taskDetailsDialog")}
             }
         }
     }
@@ -135,6 +136,19 @@ class CalendarFragment : Fragment(), OnItemListener {
         selectedDate = selectedDate.plusMonths(1)
         setMonthView()
         observeTaskList()
+    }
+
+
+    override fun onTaskUpdated(task: Task) {
+        // Обработка обновленной задачи
+        taskModel.updateTask(task)
+        observeTaskList() // Обновление данных в адаптере
+    }
+
+    override fun onTaskDeleted(taskId: String) {
+        // Обработка удаления задачи
+        taskModel.deleteTask(taskId)
+        observeTaskList() // Обновление данных в адаптере
     }
 
 }
