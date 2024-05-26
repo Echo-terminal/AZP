@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.azp.data_classes.Date
 import com.example.azp.data_classes.Task
+import com.example.azp.data_classes.TaskState
 
 class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : ViewModel() {
 
@@ -37,7 +38,6 @@ class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : Vi
             listLiveData.add(task[1])
             listLiveData.add(task[2])
             listLiveData.add(task[3])
-            Log.d("da111s", listLiveData.toString())
             callback(listLiveData)
         }
     }
@@ -54,6 +54,18 @@ class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : Vi
             }
         })
     }
+
+    fun getAllCompletedTasks(list: List<Task>, callback: (List<Task>) -> Unit){
+        val completedTasks = mutableListOf<Task>()
+        for (task in list) {
+            when (task!!.getState()) {
+                TaskState.NONE, TaskState.TODO, TaskState.IN_PROGRESS, TaskState.MILESTONE -> continue
+                TaskState.COMPLETED -> completedTasks.add(task)
+            }
+        }
+        callback(completedTasks)
+    }
+
 
 
     fun getAllTasksByDate(date: Date, callback: (List<Task>) -> Unit) {

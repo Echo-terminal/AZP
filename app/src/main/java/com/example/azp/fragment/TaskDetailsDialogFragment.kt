@@ -71,7 +71,8 @@ class TaskDetailsDialogFragment : DialogFragment() {
         task?.let { displayTaskDetails(it) }
         binding.buttonCompleted.setOnClickListener{
             task.setTaskState(TaskState.COMPLETED)
-            listener?.onTaskUpdated(task) // Передача данных
+            task.setDateCom(Date.now())
+            listener?.onTaskUpdated(task)
             dismiss()
         }
         binding.buttonSave.setOnClickListener{

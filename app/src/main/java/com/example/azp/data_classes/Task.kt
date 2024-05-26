@@ -15,8 +15,9 @@ class Task(
     private var id: String = "",
     private var title: String = "",
     private var description: String = "",
-    private var state: TaskState = TaskState.TODO,
-    private var dueDate: Date = Date.now()
+    private var state: TaskState = TaskState.NONE,
+    private var dueDate: Date = Date.now(),
+    private var dateCompleted: Date = Date(1,1,1)
 ) {
 
     fun getId(): String{
@@ -56,6 +57,14 @@ class Task(
 
     fun  setTaskState(newState: TaskState){
         state = newState
+    }
+
+    fun setDateCom(newDate: Date) {
+        dateCompleted = newDate
+    }
+
+    fun getDateCom() :Date{
+        return dateCompleted
     }
 
 }

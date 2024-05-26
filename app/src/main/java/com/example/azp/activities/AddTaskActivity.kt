@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
@@ -30,11 +31,13 @@ class AddTaskActivity : AppCompatActivity() {
     private lateinit var taskDateTextView: TextView
     private lateinit var datePickerDialog: DatePickerDialog
     private lateinit var taskDate: Date
+    private lateinit var dateCompleted: Date
     private var selectedState:TaskState = TaskState.NONE
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
         taskDate = Date.now()
+        dateCompleted = Date(1,1,1)
 
         initDatePicker()
         taskDateTextView = findViewById(R.id.currentDate)
@@ -93,7 +96,7 @@ class AddTaskActivity : AppCompatActivity() {
         saveBtn.setOnClickListener {
             val taskTitle = editTitle.text.toString()
             val taskDescription = editTextDescription.text.toString()
-            val newTask = Task("", taskTitle, taskDescription, selectedState, taskDate)
+            val newTask = Task("", taskTitle, taskDescription, selectedState, taskDate, dateCompleted)
             val resultIntent = Intent()
             val gson = Gson()
             val json = gson.toJson(newTask)
