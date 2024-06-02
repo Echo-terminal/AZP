@@ -1,14 +1,10 @@
 package com.example.azp.fragment
 
 import android.os.Bundle
-import android.util.Log
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ViewSwitcher
-//import androidx.compose.ui.graphics.Color
-import android.graphics.Color
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.azp.R
@@ -18,7 +14,6 @@ import com.example.azp.utilities.TaskViewModel
 import com.example.azp.utilities.TaskViewModelFactory
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -27,12 +22,12 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 
 class GraphsFragment : Fragment() {
 
     private lateinit var taskModel: TaskViewModel
-    private lateinit var viewSwitcher: ViewSwitcher
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,23 +36,16 @@ class GraphsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_graphs, container, false)
         taskModel = ViewModelProvider(this, TaskViewModelFactory(TaskFirebaseRepository()))[TaskViewModel::class.java]
 
-        viewSwitcher = view.findViewById(R.id.viewSwitcher)
         val pieChart: PieChart = view.findViewById(R.id.pieChart)
         val barChart: BarChart = view.findViewById(R.id.barChart)
-        val switchButton: Button = view.findViewById(R.id.buttonSwitch)
-
-        switchButton.setOnClickListener {
-            viewSwitcher.showNext()
-        }
 
         taskModel.getTaskType { taskTypes ->
             setupPieChart(pieChart, taskTypes)
         }
 
-
-        taskModel.getAllSortedTasksOfMonth(5){ tasks->
-            taskModel.getAllCompletedTasks(tasks){
-                setupBarChart(barChart,it)
+        taskModel.getAllSortedTasksOfMonth(5) { tasks ->
+            taskModel.getAllCompletedTasks(tasks) {
+                setupBarChart(barChart, it)
             }
         }
 
@@ -66,16 +54,12 @@ class GraphsFragment : Fragment() {
 
     private fun setupPieChart(pieChart: PieChart, taskTypes: List<Int>) {
         val pieEntries = ArrayList<PieEntry>()
-        val toDo = taskTypes[0].toFloat()
-        val progress = taskTypes[1].toFloat()
-        val mileStones = taskTypes[2].toFloat()
-        val completed = taskTypes[3].toFloat()
-        pieEntries.add(PieEntry(toDo, "To Do"))
-        pieEntries.add(PieEntry(progress, "Progress"))
-        pieEntries.add(PieEntry(mileStones, "Milestones"))
-        pieEntries.add(PieEntry(completed, "Completed"))
+        pieEntries.add(PieEntry(taskTypes[0].toFloat(), "To Do"))
+        pieEntries.add(PieEntry(taskTypes[1].toFloat(), "Progress"))
+        pieEntries.add(PieEntry(taskTypes[2].toFloat(), "Milestones"))
+        pieEntries.add(PieEntry(taskTypes[3].toFloat(), "Completed"))
 
-        val dataSet = PieDataSet(pieEntries, "Your data")
+        val dataSet = PieDataSet(pieEntries, "Task Types")
         dataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
 
         val data = PieData(dataSet)
@@ -85,39 +69,52 @@ class GraphsFragment : Fragment() {
 
     private fun setupBarChart(barChart: BarChart, tasks: List<Task>) {
         val entries = ArrayList<BarEntry>()
-        val sort: MutableList<Int> = mutableListOf<Int>().apply {
-            for (i in 0 .. 31) add(0)
+        val sort = MutableList(31) { 0 }
+
+        tasks.forEach { task ->
+            val day = task.getDueDate().day
+            sort[day]++
         }
 
-        for(i in 0 until tasks.size) {
-            sort[tasks[i].getDueDate().day]++
-
-        }
-        for(i in 0 until sort.size){
-           entries.add(BarEntry( i.toFloat(),sort[i].toFloat() ))
+        sort.forEachIndexed { index, count ->
+            entries.add(BarEntry(index.toFloat(), count.toFloat()))
         }
 
+        val dataSet = BarDataSet(entries, "").apply {
+            color = Color.parseColor("#008000") // Цвет столбцов
+            valueTextSize = 6f // Размер текста значений
+            valueTextColor = Color.BLACK // Цвет текста значений
+            setDrawValues(false) // Отключает значения по умолчанию
+        }
 
-
-        val dataSet = BarDataSet(entries, "Task Types")
-        dataSet.color = Color.parseColor("#0000FF")
         val barData = BarData(dataSet)
         barChart.data = barData
 
-        val xAxis = barChart.xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.setDrawLabels(true) // Разрешить отрисовку меток
-        xAxis.setDrawGridLines(false) // Отключить сетку
+        barChart.apply {
+            description.isEnabled = false
+            setFitBars(true)
+            animateY(1000)
 
-        // Установка меток на ось X через цикл
-        val labels = ArrayList<String>()
-        for (i in 0 .. 30) {
-            labels.add((i + 1).toString() + " день")
+            axisLeft.apply {
+                isEnabled = false // Отключаем левую ось
+                axisMinimum = 0f // Устанавливаем минимум на 0, чтобы столбцы прилегали к нижней линии
+            }
+
+            axisRight.isEnabled = false // Отключаем правую ось
+
+            xAxis.apply {
+                position = XAxis.XAxisPosition.BOTTOM
+                textSize = 12f
+                textColor = Color.BLACK
+                setDrawLabels(true)
+                setDrawGridLines(false)
+                valueFormatter = IndexAxisValueFormatter((1..31).map { "$it день" })
+            }
+
+            legend.isEnabled = false // Отключаем легенду
+
         }
-        xAxis.valueFormatter = IndexAxisValueFormatter(labels)
 
-
-
-        barChart.invalidate()
+        barChart.invalidate() // refresh
     }
 }
