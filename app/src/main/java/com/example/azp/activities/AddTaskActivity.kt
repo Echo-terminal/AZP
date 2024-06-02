@@ -97,6 +97,7 @@ class AddTaskActivity : AppCompatActivity() {
             val taskTitle = editTitle.text.toString()
             val taskDescription = editTextDescription.text.toString()
             val newTask = Task("", taskTitle, taskDescription, selectedState, taskDate, dateCompleted)
+            if (newTask.getState()==TaskState.COMPLETED) newTask.setDateCom(Date.now())
             val resultIntent = Intent()
             val gson = Gson()
             val json = gson.toJson(newTask)

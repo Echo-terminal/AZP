@@ -68,6 +68,33 @@ class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : Vi
 
 
 
+    fun getCompletedTasksInRange(
+        startDate: Date,
+        endDate: Date,
+        callback: (List<Task>) -> Unit
+    ) {
+        firebaseRepository.getAllTasks(object : TaskFirebaseRepositoryCallback<Task> {
+            override fun onSuccess(result: List<Task>) {
+                val tasksForDate = mutableListOf<Task>()
+                for (task in result) {
+                    if (task.getState() == TaskState.COMPLETED) {
+                        val completionDate = task.getDateCom()
+                        if (completionDate != null && completionDate.isAfter(startDate) && completionDate.isBefore(endDate)) {
+                            tasksForDate.add(task)
+                        }
+                    }
+                }
+                callback(tasksForDate)
+            }
+
+            override fun onError(e: Exception) {
+                e.printStackTrace()
+            }
+        })
+    }
+
+
+
     fun getAllTasksByDate(date: Date, callback: (List<Task>) -> Unit) {
         firebaseRepository.getAllTasks(object : TaskFirebaseRepositoryCallback<Task> {
             override fun onSuccess(result: List<Task>) {

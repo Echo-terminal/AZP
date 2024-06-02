@@ -24,7 +24,6 @@ class TaskFirebaseRepository :
     fun add(item: Task, callback: TaskFirebaseRepositoryCallback<Task>) {
         val key = databaseReference.push().key ?: return
         item.setId(key)
-        item.setDateCom(Date(1,1,1))
         databaseReference.child(NODE_USER).child(UID).child(NODE_TASK).child(key).setValue(item)
             .addOnSuccessListener {
                 callback.onSuccess(listOf(item))

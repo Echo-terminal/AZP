@@ -17,6 +17,17 @@ class Date() {
         require(day in 1..31) { "Day must be between 1 and 31" }
     }
 
+    fun compareTo(other: Date): Int {
+        if (this.year != other.year) {
+            return this.year - other.year
+        }
+        if (this.month != other.month) {
+            return this.month - other.month
+        }
+        return this.day - other.day
+    }
+
+
     override fun toString(): String {
         return String.format("%02d %02d %04d", day, month, year)
     }
@@ -47,4 +58,25 @@ class Date() {
             return Date(year, month, day)
         }
     }
+    private fun toJulianDayNumber(): Int {
+        val a = (14 - month) / 12
+        val y = year + 4800 - a
+        val m = month + 12 * a - 3
+        return day + (153 * m + 2) / 5 + 365 * y + y / 4 - y / 100 + y / 400 - 32045
+    }
+
+    operator fun minus(other: Date): Int {
+        return this.toJulianDayNumber() - other.toJulianDayNumber()
+    }
+
+
+    fun isBefore(other: Date): Boolean {
+        return this.compareTo(other) < 0
+    }
+
+    fun isAfter(other: Date): Boolean {
+        return this.compareTo(other) > 0
+    }
+
+
 }
