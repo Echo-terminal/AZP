@@ -6,7 +6,6 @@
 
     <group>
         <path
-            android:fillColor="none"
             android:strokeColor="#000000"
             android:strokeWidth="1"
             android:pathData="M 5,0.5 A 4.5,4.5 0 0 1 9.5,5 A 4.5,4.5 0 0 1 5,9.5 A 4.5,4.5 0 0 1 0.5,5 A 4.5,4.5 0 0 1 5,0.5 Z" />
