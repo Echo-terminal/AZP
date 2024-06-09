@@ -27,7 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
-class DocumentsFragment : Fragment(), FileAdapter.OnItemClickListener {
+class DocumentsFragment : Fragment() {
 
     private val PICK_FILE_REQUEST = 1
     private lateinit var storageReference: StorageReference
@@ -45,7 +45,7 @@ class DocumentsFragment : Fragment(), FileAdapter.OnItemClickListener {
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerViewFiles)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        fileAdapter = FileAdapter(documentsViewModel.fileList.value ?: mutableListOf(), this)
+        fileAdapter = FileAdapter(documentsViewModel.fileList.value ?: mutableListOf(), requireContext()) // передаем контекст в адаптер
         recyclerView.adapter = fileAdapter
 
         documentsViewModel.fileList.observe(viewLifecycleOwner, { files ->
@@ -72,7 +72,7 @@ class DocumentsFragment : Fragment(), FileAdapter.OnItemClickListener {
             .get()
             .addOnSuccessListener { documents ->
                 val files = documents.map { it.getString("fileName") ?: "Unknown file" }.toMutableList()
-                documentsViewModel.fileList.postValue(files) // Используйте postValue()
+                documentsViewModel.fileList.postValue(files)
             }
             .addOnFailureListener { exception ->
                 Log.w("DocumentsFragment", "Error getting files: ", exception)
@@ -142,34 +142,5 @@ class DocumentsFragment : Fragment(), FileAdapter.OnItemClickListener {
             .addOnFailureListener { e ->
                 Log.w("DocumentsFragment", "Error adding file metadata", e)
             }
-    }
-
-
-    private fun addFileToList(fileName: String) {
-        documentsViewModel.addFile(fileName)
-    }
-
-    override fun onItemClick(fileName: String) {
-        val user = FirebaseAuth.getInstance().currentUser
-        val userId = user?.uid ?: return
-        val fileReference = storageReference.child("uploads/$userId/$fileName")
-        fileReference.downloadUrl.addOnSuccessListener { uri ->
-            downloadFile(fileName, uri.toString())
-        }.addOnFailureListener { exception ->
-            Log.e("DocumentsFragment", "Failed to get download URL", exception)
-            Toast.makeText(context, "Failed to get download URL: ${exception.message}", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun downloadFile(fileName: String, downloadUrl: String) {
-        val downloadManager = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val uri = Uri.parse(downloadUrl)
-        val request = DownloadManager.Request(uri)
-        request.setTitle(fileName)
-        request.setDescription("Downloading file...")
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
-        downloadManager.enqueue(request)
-        Toast.makeText(context, "Downloading $fileName", Toast.LENGTH_SHORT).show()
     }
 }

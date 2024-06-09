@@ -54,7 +54,6 @@ class ProfileFragment : Fragment() {
     ): View? {
         super.onActivityCreated(savedInstanceState)
         val authRepository = AuthRepository()
-        val viewModelFactory = AuthViewModelFactory(authRepository)
         model = ViewModelProvider(this, AuthViewModelFactory(AuthRepository()))[AuthViewModel::class.java]
         firebaseModel = ViewModelProvider(this, TaskViewModelFactory(TaskFirebaseRepository()))[TaskViewModel::class.java]
 
