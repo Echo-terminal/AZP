@@ -10,6 +10,10 @@ import android.widget.Button
 import android.widget.DatePicker
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.azp.R
+import com.example.azp.adapter.FileAdapter
 import com.example.azp.data_classes.Date
 import com.example.azp.data_classes.Task
 import com.example.azp.data_classes.TaskState
@@ -17,6 +21,7 @@ import com.example.azp.databinding.TaskDetailsFragmentBinding
 import com.example.azp.utilities.TaskFirebaseRepository
 import com.example.azp.utilities.TaskViewModel
 import com.example.azp.utilities.TaskViewModelFactory
+import com.example.azp.viewmodel.DocumentsViewModel
 import com.google.gson.Gson
 import java.util.Calendar
 
@@ -26,6 +31,8 @@ class TaskDetailsDialogFragment : DialogFragment() {
     private val binding get() = _binding!!
     private lateinit var datePickerDialog: DatePickerDialog
     private lateinit var taskDate: Date
+    private lateinit var fileAdapter: FileAdapter
+    private lateinit var documentsViewModel: DocumentsViewModel
 
     interface TaskDetailsListener {
         fun onTaskUpdated(task: Task)
@@ -92,6 +99,15 @@ class TaskDetailsDialogFragment : DialogFragment() {
             listener?.onTaskDeleted(task.getId()) // Передача данных
             dismiss()
         }
+
+        val recyclerView: RecyclerView = view.findViewById(R.id.task_details_files)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        fileAdapter = FileAdapter(documentsViewModel.fileList.value ?: mutableListOf(), requireContext()) // передаем контекст в адаптер
+        recyclerView.adapter = fileAdapter
+
+        documentsViewModel.fileList.observe(viewLifecycleOwner, { files ->
+            fileAdapter.updateFiles(files)
+        })
     }
 
     private fun displayTaskDetails(task: Task) {

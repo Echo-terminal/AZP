@@ -1,6 +1,7 @@
 package com.example.azp.data_classes
 
 import android.icu.text.CaseMap.Title
+import android.net.Uri
 
 
 enum class TaskState {
@@ -18,7 +19,10 @@ class Task(
     private var state: TaskState = TaskState.NONE,
     private var dueDate: Date = Date.now(),
     private var dateCompleted: Date = Date(1,1,1)
+
 ) {
+
+
 
     fun getId(): String{
         return id

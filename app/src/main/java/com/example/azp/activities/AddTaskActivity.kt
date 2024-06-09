@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -15,29 +16,43 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.ViewModelProvider
 import com.example.azp.R
+import com.example.azp.adapter.FileAdapter
 import com.example.azp.data_classes.Date
 import com.example.azp.data_classes.Task
 import com.example.azp.data_classes.TaskState
 import com.example.azp.utilities.TaskFirebaseRepository
 import com.example.azp.utilities.TaskViewModel
 import com.example.azp.utilities.TaskViewModelFactory
+import com.example.azp.viewmodel.DocumentsViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import java.util.Calendar
 
 
 class AddTaskActivity : AppCompatActivity() {
 
+    private val PICK_FILE_REQUEST = 1
+    private lateinit var storageReference: StorageReference
+    private lateinit var documentsViewModel: DocumentsViewModel
+
     private lateinit var taskDateTextView: TextView
     private lateinit var datePickerDialog: DatePickerDialog
     private lateinit var taskDate: Date
     private lateinit var dateCompleted: Date
     private var selectedState:TaskState = TaskState.NONE
+    private lateinit var fileURL: Uri
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
         taskDate = Date.now()
         dateCompleted = Date(1,1,1)
+        storageReference = FirebaseStorage.getInstance().reference
+        documentsViewModel = ViewModelProvider(this).get(DocumentsViewModel::class.java)
 
         initDatePicker()
         taskDateTextView = findViewById(R.id.currentDate)
@@ -52,6 +67,7 @@ class AddTaskActivity : AppCompatActivity() {
             finish()
         }
 
+        val addBtn = findViewById<Button>(R.id.button_Add_File)
         val saveBtn = findViewById<Button>(R.id.button_Save)
         val editTitle = findViewById<TextView>(R.id.editTextTitle)
         val editTextDescription = findViewById<TextView>(R.id.editTextDescription) //поле описания
@@ -97,6 +113,9 @@ class AddTaskActivity : AppCompatActivity() {
             val taskTitle = editTitle.text.toString()
             val taskDescription = editTextDescription.text.toString()
             val newTask = Task("", taskTitle, taskDescription, selectedState, taskDate, dateCompleted)
+            if (fileURL!=null) {
+                uploadFile(fileURL)
+            }
             if (newTask.getState()==TaskState.COMPLETED) newTask.setDateCom(Date.now())
             val resultIntent = Intent()
             val gson = Gson()
@@ -109,15 +128,15 @@ class AddTaskActivity : AppCompatActivity() {
                 Toast.makeText(this, "Empty task", Toast.LENGTH_SHORT).show()
             }
         }
+
+        addBtn.setOnClickListener {
+            openFileChooser()
+        }
     }
 
-    private fun getTodayDate(): Date {
-        val cal = Calendar.getInstance()
-        val year = cal.get(Calendar.YEAR)
-        val month = cal.get(Calendar.MONTH) + 1
-        val day = cal.get(Calendar.DAY_OF_MONTH)
-        return Date(year, month, day)
-    }
+
+
+
 
     private fun initDatePicker() {
         val dateSetListener =
@@ -139,6 +158,70 @@ class AddTaskActivity : AppCompatActivity() {
 
     private fun openDatePicker() {
         datePickerDialog.show()
+    }
+
+    private fun openFileChooser() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "*/*"
+        startActivityForResult(intent, PICK_FILE_REQUEST)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_FILE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+            fileURL = data.data!!
+        } else {
+            Log.e("DocumentsFragment", "No file selected or activity result not OK")
+        }
+    }
+
+    private fun uploadFile(fileUri: Uri) {
+        val user = FirebaseAuth.getInstance().currentUser
+        val userId = user?.uid ?: return
+
+        val fileReference = storageReference.child("uploads/$userId/${fileUri.lastPathSegment}")
+        Log.d("DocumentsFragment", "Uploading to: ${fileReference.path}")
+
+        fileReference.putFile(fileUri)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Upload successful", Toast.LENGTH_SHORT).show()
+                fileReference.downloadUrl.addOnSuccessListener { uri ->
+                    val downloadUrl = uri.toString()
+                    Log.d("DocumentsFragment", "File available at: $downloadUrl")
+                    Toast.makeText(this, "File available at: $downloadUrl", Toast.LENGTH_LONG).show()
+                    saveFileMetadataToFirestore(userId, fileUri.lastPathSegment ?: "Unknown file", downloadUrl)
+                }.addOnFailureListener { exception ->
+                    Log.e("DocumentsFragment", "Failed to get download URL", exception)
+                    Toast.makeText(this, "Failed to get download URL: ${exception.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("DocumentsFragment", "Upload failed", exception)
+                Toast.makeText(this, "Upload failed: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+            .addOnProgressListener { taskSnapshot ->
+                val progress = (100.0 * taskSnapshot.bytesTransferred) / taskSnapshot.totalByteCount
+                Log.d("DocumentsFragment", "Upload is $progress% done")
+            }
+    }
+
+    private fun saveFileMetadataToFirestore(userId: String, fileName: String, downloadUrl: String) {
+        val db = FirebaseFirestore.getInstance()
+        val fileData = hashMapOf(
+            "userId" to userId,
+            "fileName" to fileName,
+            "downloadUrl" to downloadUrl
+        )
+
+        db.collection("files")
+            .add(fileData)
+            .addOnSuccessListener {
+                Log.d("DocumentsFragment", "File metadata saved successfully")
+                documentsViewModel.addFile(fileName)
+            }
+            .addOnFailureListener { e ->
+                Log.w("DocumentsFragment", "Error adding file metadata", e)
+            }
     }
 
 }
