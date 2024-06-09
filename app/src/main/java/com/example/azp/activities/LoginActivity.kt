@@ -8,10 +8,13 @@ import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.azp.R
+import com.example.azp.data_classes.User
 import com.example.azp.databinding.ActivityMainBinding
 import com.example.azp.utilities.AuthRepository
 import com.example.azp.utilities.AuthViewModel
 import com.example.azp.utilities.AuthViewModelFactory
+import com.example.azp.utilities.UID
+import com.google.gson.Gson
 
 class LoginActivity: AppCompatActivity() {
     private lateinit var emailEditText: EditText
@@ -52,7 +55,6 @@ class LoginActivity: AppCompatActivity() {
             val password = passwordEditText.text.toString().trim()
 
             model.fromGuestToUser(email, password)
-
 
             val resultIntent = Intent()
             setResult(Activity.RESULT_OK, resultIntent)

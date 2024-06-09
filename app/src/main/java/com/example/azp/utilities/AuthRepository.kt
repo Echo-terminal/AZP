@@ -1,11 +1,15 @@
 package com.example.azp.utilities
 
+import android.R.attr.password
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.example.azp.data_classes.Task
 import com.example.azp.data_classes.User
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+
 
 class AuthRepository {
 
@@ -72,7 +76,7 @@ class AuthRepository {
     fun fromGuestToUser(email: String, password: String){
         val uid = AUTH.uid
         val tasksList = MutableLiveData<List<Task>>()
-        val taskRepository=TaskFirebaseRepository()
+        val taskRepository = TaskFirebaseRepository()
         taskRepository.getAllTasks(object : TaskFirebaseRepositoryCallback<Task> {
             override fun onSuccess(result: List<Task>) {
                 tasksList.value = result

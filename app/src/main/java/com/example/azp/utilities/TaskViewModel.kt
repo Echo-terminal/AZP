@@ -1,6 +1,5 @@
 package com.example.azp.utilities
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.azp.data_classes.Date
 import com.example.azp.data_classes.Task
 import com.example.azp.data_classes.TaskState
+import com.example.azp.data_classes.User
 
 class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : ViewModel() {
 
@@ -153,7 +153,38 @@ class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : Vi
             }
         })
     }
-}class TaskViewModelFactory(private val firebaseRepository: TaskFirebaseRepository ) : ViewModelProvider.Factory {
+
+    private val _currentUser = MutableLiveData<User>()
+
+    fun getCurrentUser(): LiveData<User> {
+        firebaseRepository.getCurrentUser(object : UserFirebaseRepositoryCallback<User> {
+            override fun onSuccess(result: User) {
+                _currentUser.value = result
+            }
+
+            override fun onError(e: Exception) {
+                // Handle error
+                e.printStackTrace()
+            }
+        })
+        return _currentUser
+    }
+
+    fun updateUser(user: User) {
+        firebaseRepository.updateUser(user, object : UserFirebaseRepositoryCallback<User> {
+            override fun onSuccess(result: User) {
+                _currentUser.value = result
+            }
+
+            override fun onError(e: Exception) {
+                e.printStackTrace()
+            }
+        })
+    }
+
+}
+
+class TaskViewModelFactory(private val firebaseRepository: TaskFirebaseRepository ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TaskViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

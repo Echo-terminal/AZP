@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.azp.data_classes.Date
 import com.example.azp.data_classes.Task
 import com.example.azp.data_classes.TaskState
+import com.example.azp.data_classes.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -16,6 +17,10 @@ interface TaskFirebaseRepositoryCallback<T> {
     fun onError(e: Exception)
 }
 
+interface UserFirebaseRepositoryCallback<T> {
+    fun onSuccess(result: T)
+    fun onError(e: Exception)
+}
 
 class TaskFirebaseRepository :
     TaskFirebaseRepositoryCallback<Task> {
@@ -139,6 +144,35 @@ class TaskFirebaseRepository :
 
     override fun onError(e: Exception) {
 
+    }
+
+    fun getCurrentUser(callback: UserFirebaseRepositoryCallback<User>) {
+        val userRef = databaseReference.child(NODE_USER).child(UID)
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val user = snapshot.getValue(User::class.java)
+                if (user != null) {
+                    callback.onSuccess(user)
+                } else {
+                    callback.onError(Exception("User not found"))
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback.onError(error.toException())
+            }
+        })
+    }
+
+    fun updateUser(item: User ,callback: UserFirebaseRepositoryCallback<User>) {
+        databaseReference.child(NODE_USER).child(UID).child("email").setValue(item.email)
+        databaseReference.child(NODE_USER).child(UID).child("username").setValue(item.username)
+            .addOnSuccessListener {
+                callback.onSuccess(item)
+            }
+            .addOnFailureListener {
+                callback.onError(it)
+            }
     }
 
 }

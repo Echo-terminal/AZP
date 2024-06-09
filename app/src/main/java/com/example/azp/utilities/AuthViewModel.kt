@@ -38,7 +38,6 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     fun fromGuestToUser(email: String,password: String) {
         authRepository.fromGuestToUser(email,password)
     }
-
 }
 
 class AuthViewModelFactory(private val authRepository: AuthRepository) : ViewModelProvider.Factory {
