@@ -12,6 +12,7 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
 import com.example.azp.databinding.ActivityMainBinding
 import com.example.azp.fragment.CalendarFragment
 import com.example.azp.fragment.DocumentsFragment
@@ -24,6 +25,7 @@ import com.example.azp.utilities.AuthViewModel
 import com.example.azp.utilities.AuthViewModelFactory
 import com.example.azp.utilities.UID
 import com.example.azp.utilities.initFirebase
+import com.example.azp.viewmodel.DocumentsViewModel
 import com.google.android.material.navigation.NavigationView
 
 
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var fragmentManager: FragmentManager
     private lateinit var binding: ActivityMainBinding
+    lateinit var documentsViewModel: DocumentsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -50,6 +53,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if(!user){
             model.guestUser()
         }
+        documentsViewModel = ViewModelProvider(this).get(DocumentsViewModel::class.java)
+
 
         //кнопка навигации
         val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, R.string.nav_open, R.string.nav_close)
