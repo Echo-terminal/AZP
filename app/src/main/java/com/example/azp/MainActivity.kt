@@ -4,7 +4,6 @@ import ProfileFragment
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -18,8 +17,7 @@ import com.example.azp.fragment.CalendarFragment
 import com.example.azp.fragment.DocumentsFragment
 import com.example.azp.fragment.GraphsFragment
 import com.example.azp.fragment.ListFragment
-import com.example.azp.fragment.MeetingsFragment
-import com.example.azp.fragment.SettingsFragment
+import com.example.azp.fragment.MainFragment
 import com.example.azp.utilities.AuthRepository
 import com.example.azp.utilities.AuthViewModel
 import com.example.azp.utilities.AuthViewModelFactory
@@ -44,6 +42,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         initFields()
+
         val authRepository = AuthRepository()
         val model: AuthViewModel by viewModels {
             AuthViewModelFactory(authRepository)
@@ -69,6 +68,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         fragmentManager = supportFragmentManager
 
+        openFragment(MainFragment())
+
         toggle.setToolbarNavigationClickListener {
             if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -92,9 +93,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_list -> openFragment(ListFragment())
             R.id.nav_calendar -> openFragment(CalendarFragment())
             R.id.nav_graphs -> openFragment(GraphsFragment())
-            R.id.nav_meetings -> openFragment(MeetingsFragment())
             R.id.nav_documents -> openFragment(DocumentsFragment())
-            R.id.nav_settings -> openFragment(SettingsFragment())
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true

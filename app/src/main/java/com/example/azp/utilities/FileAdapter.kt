@@ -2,20 +2,22 @@ package com.example.azp.adapter
 
 import android.content.Context
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.azp.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 
 class FileAdapter(
     private var files: MutableList<String>,
-    private val context: Context // добавляем контекст для использования в адаптере
+    private val context: Context
 ) : RecyclerView.Adapter<FileAdapter.FileViewHolder>() {
+
+    private var allFiles = ArrayList(files)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_file, parent, false)
@@ -47,6 +49,16 @@ class FileAdapter(
 
     fun updateFiles(newFiles: MutableList<String>) {
         files = newFiles
+        allFiles = ArrayList(newFiles)
+        notifyDataSetChanged()
+    }
+
+    fun filter(query: String) {
+        files = if (query.isEmpty()) {
+            allFiles
+        } else {
+            allFiles.filter { it.contains(query, true) }.toMutableList()
+        }
         notifyDataSetChanged()
     }
 
@@ -66,3 +78,4 @@ class FileAdapter(
         val fileNameTextView: TextView = itemView.findViewById(R.id.fileNameTextView)
     }
 }
+

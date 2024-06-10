@@ -1,26 +1,19 @@
 package com.example.azp.fragment
 
-import android.app.Activity
-import android.app.DownloadManager
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
+import android.widget.EditText
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.azp.R
 import com.example.azp.adapter.FileAdapter
-import com.example.azp.utilities.AuthViewModel
-import com.example.azp.utilities.AuthViewModelFactory
 import com.example.azp.viewmodel.DocumentsViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,7 +21,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
 class DocumentsFragment : Fragment() {
-
 
     private lateinit var storageReference: StorageReference
     private lateinit var fileAdapter: FileAdapter
@@ -54,6 +46,21 @@ class DocumentsFragment : Fragment() {
 
         loadUserFiles()
 
+        val searchEditText: EditText = view.findViewById(R.id.search_files)
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // Do nothing
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Do nothing
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                fileAdapter.filter(s.toString())
+            }
+        })
+
         return view
     }
 
@@ -73,6 +80,5 @@ class DocumentsFragment : Fragment() {
                 Log.w("DocumentsFragment", "Error getting files: ", exception)
             }
     }
-
-
 }
+

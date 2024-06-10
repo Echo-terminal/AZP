@@ -27,11 +27,14 @@ import com.example.azp.utilities.TaskViewModel
 import com.example.azp.utilities.TaskViewModelFactory
 import com.example.azp.viewmodel.DocumentsViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 
 class AddTaskActivity : AppCompatActivity() {
@@ -45,7 +48,9 @@ class AddTaskActivity : AppCompatActivity() {
     private lateinit var taskDate: Date
     private lateinit var dateCompleted: Date
     private var selectedState:TaskState = TaskState.NONE
-    private lateinit var fileURL: Uri
+    private var fileURL: Uri? = null
+
+    private var key: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
@@ -76,7 +81,7 @@ class AddTaskActivity : AppCompatActivity() {
         val stateComplete = findViewById<CheckBox>(R.id.checkBox4_complete)
         val stateMilestone = findViewById<CheckBox>(R.id.checkBox3_milestones)
 
-        stateToDo.setOnCheckedChangeListener { _ , isChecked ->
+                stateToDo.setOnCheckedChangeListener { _ , isChecked ->
             if (isChecked) {
                 selectedState = TaskState.TODO
 
@@ -110,11 +115,12 @@ class AddTaskActivity : AppCompatActivity() {
         }
 
         saveBtn.setOnClickListener {
+            key = FirebaseDatabase.getInstance().getReference().push().key
             val taskTitle = editTitle.text.toString()
             val taskDescription = editTextDescription.text.toString()
-            val newTask = Task("", taskTitle, taskDescription, selectedState, taskDate, dateCompleted)
+            val newTask = Task(key!!, taskTitle, taskDescription, selectedState, taskDate, dateCompleted)
             if (fileURL!=null) {
-                uploadFile(fileURL)
+                uploadFile(fileURL!!)
             }
             if (newTask.getState()==TaskState.COMPLETED) newTask.setDateCom(Date.now())
             val resultIntent = Intent()
@@ -179,7 +185,18 @@ class AddTaskActivity : AppCompatActivity() {
         val user = FirebaseAuth.getInstance().currentUser
         val userId = user?.uid ?: return
 
-        val fileReference = storageReference.child("uploads/$userId/${fileUri.lastPathSegment}")
+        val timestamp = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(java.util.Date())
+        // Получение расширения файла
+        val extension = fileUri.lastPathSegment?.substringAfterLast('.', "") ?: ""
+
+        // Формирование имени файла с использованием текущей даты и времени и расширения файла
+        val fileName = if (extension.isNotEmpty()) {
+            "$timestamp.$extension"
+        } else {
+            timestamp
+        }
+
+        val fileReference = storageReference.child("uploads/$userId/$fileName")
         Log.d("DocumentsFragment", "Uploading to: ${fileReference.path}")
 
         fileReference.putFile(fileUri)
@@ -189,7 +206,7 @@ class AddTaskActivity : AppCompatActivity() {
                     val downloadUrl = uri.toString()
                     Log.d("DocumentsFragment", "File available at: $downloadUrl")
                     Toast.makeText(this, "File available at: $downloadUrl", Toast.LENGTH_LONG).show()
-                    saveFileMetadataToFirestore(userId, fileUri.lastPathSegment ?: "Unknown file", downloadUrl)
+                    saveFileMetadataToFirestore(userId, fileName, downloadUrl, key!!)
                 }.addOnFailureListener { exception ->
                     Log.e("DocumentsFragment", "Failed to get download URL", exception)
                     Toast.makeText(this, "Failed to get download URL: ${exception.message}", Toast.LENGTH_SHORT).show()
@@ -205,10 +222,11 @@ class AddTaskActivity : AppCompatActivity() {
             }
     }
 
-    private fun saveFileMetadataToFirestore(userId: String, fileName: String, downloadUrl: String) {
+    private fun saveFileMetadataToFirestore(userId: String, fileName: String, downloadUrl: String, taskId: String) {
         val db = FirebaseFirestore.getInstance()
         val fileData = hashMapOf(
             "userId" to userId,
+            "taskId" to taskId,
             "fileName" to fileName,
             "downloadUrl" to downloadUrl
         )

@@ -182,6 +182,9 @@ class TaskViewModel(private val firebaseRepository: TaskFirebaseRepository) : Vi
         })
     }
 
+    fun getCompletedTask(completion: CompletionPercentageCallback) {
+        firebaseRepository.getCompletedTask(completion)
+    }
 }
 
 class TaskViewModelFactory(private val firebaseRepository: TaskFirebaseRepository ) : ViewModelProvider.Factory {

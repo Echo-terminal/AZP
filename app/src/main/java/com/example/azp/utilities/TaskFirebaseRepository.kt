@@ -22,14 +22,16 @@ interface UserFirebaseRepositoryCallback<T> {
     fun onError(e: Exception)
 }
 
+interface CompletionPercentageCallback {
+    fun onCompletionPercentage(percentage: Double)
+}
+
 class TaskFirebaseRepository :
     TaskFirebaseRepositoryCallback<Task> {
 
     private val databaseReference: DatabaseReference = FirebaseDatabase.getInstance().getReference()
     fun add(item: Task, callback: TaskFirebaseRepositoryCallback<Task>) {
-        val key = databaseReference.push().key ?: return
-        item.setId(key)
-        databaseReference.child(NODE_USER).child(UID).child(NODE_TASK).child(key).setValue(item)
+        databaseReference.child(NODE_USER).child(UID).child(NODE_TASK).child(item.getId()).setValue(item)
             .addOnSuccessListener {
                 callback.onSuccess(listOf(item))
             }
@@ -60,20 +62,33 @@ class TaskFirebaseRepository :
     }
 
 
-    fun getCompletedTask() {
-        val completedTasks = mutableListOf<Task>()
+    fun getCompletedTask(completion: CompletionPercentageCallback) {
         val taskRef = databaseReference.child(NODE_USER).child(UID).child(NODE_TASK)
         taskRef.get().addOnSuccessListener { snapshot ->
+            var totalTasks = 0
+            var completedTasks = 0
             for (taskSnapshot in snapshot.children) {
                 val task = taskSnapshot.getValue(Task::class.java)
-                when (task!!.getState()) {
-                    TaskState.NONE, TaskState.TODO, TaskState.IN_PROGRESS, TaskState.MILESTONE -> continue
-                    TaskState.COMPLETED -> completedTasks.add(task)
+                totalTasks++
+                when (task?.getState()) {
+                    TaskState.COMPLETED -> completedTasks++
+                    TaskState.TODO, TaskState.IN_PROGRESS, TaskState.MILESTONE, TaskState.NONE, null -> {
+                        continue
                     }
-
                 }
             }
+            // Вычисляем процент выполненных задач от общего числа задач
+            val percentageCompleted = if (totalTasks > 0) {
+                (completedTasks.toDouble() / totalTasks.toDouble()) * 100
+            } else {
+                0.0
+            }
+            // Возвращаем процент выполнения через callback
+            completion.onCompletionPercentage(percentageCompleted)
+        }
     }
+
+
     fun getTaskTypes(callback: (List<Int>) -> Unit) {
         val taskTypeList = mutableListOf<Int>().apply {
             add(0)

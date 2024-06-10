@@ -3,6 +3,7 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,8 @@ import com.example.azp.utilities.TaskFirebaseRepository
 import com.example.azp.utilities.TaskViewModel
 import com.example.azp.utilities.TaskViewModelFactory
 import com.example.azp.viewmodel.DocumentsViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import java.util.Calendar
 
@@ -66,6 +69,7 @@ class TaskDetailsDialogFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = TaskDetailsFragmentBinding.inflate(inflater, container, false)
+        documentsViewModel = ViewModelProvider(requireActivity())[DocumentsViewModel::class.java]
         return binding.root
     }
 
@@ -105,9 +109,11 @@ class TaskDetailsDialogFragment : DialogFragment() {
         fileAdapter = FileAdapter(documentsViewModel.fileList.value ?: mutableListOf(), requireContext()) // передаем контекст в адаптер
         recyclerView.adapter = fileAdapter
 
-        documentsViewModel.fileList.observe(viewLifecycleOwner, { files ->
+        documentsViewModel.fileList.observe(viewLifecycleOwner) { files ->
             fileAdapter.updateFiles(files)
-        })
+        }
+
+        loadTaskFiles(task.getId())
     }
 
     private fun displayTaskDetails(task: Task) {
@@ -138,5 +144,19 @@ class TaskDetailsDialogFragment : DialogFragment() {
 
     private fun openDatePicker(view: View) {
         datePickerDialog.show()
+    }
+
+    private fun loadTaskFiles(taskId: String) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("files")
+            .whereEqualTo("taskId", taskId)
+            .get()
+            .addOnSuccessListener { documents ->
+                val files = documents.map { it.getString("fileName") ?: "Unknown file" }.toMutableList()
+                documentsViewModel.fileList.postValue(files)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("TaskDetailsDialogFragment", "Ошибка при получении файлов: ", exception)
+            }
     }
 }
