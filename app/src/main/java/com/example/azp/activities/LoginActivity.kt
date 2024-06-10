@@ -8,15 +8,21 @@ import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.azp.R
+import com.example.azp.data_classes.User
+import com.example.azp.databinding.ActivityMainBinding
 import com.example.azp.utilities.AuthRepository
 import com.example.azp.utilities.AuthViewModel
 import com.example.azp.utilities.AuthViewModelFactory
+import com.example.azp.utilities.UID
+import com.google.gson.Gson
 
 class LoginActivity: AppCompatActivity() {
     private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
     private lateinit var loginButton: Button
     private lateinit var signupButton: Button
+    private lateinit var guestButton: Button
+
 
     private val authRepository = AuthRepository()
     private val model: AuthViewModel by viewModels {
@@ -31,6 +37,7 @@ class LoginActivity: AppCompatActivity() {
         passwordEditText = findViewById(R.id.edit_password)
         loginButton = findViewById(R.id.log_in_btn)
         signupButton = findViewById(R.id.sign_up_btn)
+        guestButton = findViewById(R.id.button_guest)
 
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
@@ -47,7 +54,7 @@ class LoginActivity: AppCompatActivity() {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
 
-            model.createUser(email, password)
+            model.fromGuestToUser(email, password)
 
             val resultIntent = Intent()
             setResult(Activity.RESULT_OK, resultIntent)

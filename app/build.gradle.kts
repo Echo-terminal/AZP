@@ -53,14 +53,22 @@ android {
     }
 }
 
+
+
 dependencies {
+
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage.ktx)
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(platform(libs.firebase.bom))
-    //noinspection UseTomlInstead
     implementation("com.google.firebase:firebase-analytics")
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -81,4 +89,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+
 }
+

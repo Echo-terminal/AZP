@@ -22,7 +22,7 @@
             android:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/nav_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
@@ -51,21 +51,27 @@
         app:menu="@menu/nav_menu"
         android:layout_width="220dp">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
+            android:scaleType="centerCrop"
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="2dp"
+            tools:ignore="MissingConstraints"
             android:layout_width="85dp"
             android:layout_height="85dp"
             android:src="@drawable/images"
             android:clipToOutline="true"
             android:background="@drawable/circle_background"
-            android:layout_margin="20dp"/>
+            android:layout_margin="20dp"
+            />
 
         <TextView
+            android:id="@+id/profile_email"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="test@gmail.com"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="115dp"
-            android:layout_marginLeft="20dp"/>
+            android:text="test@gmail.com" />
 
     </com.google.android.material.navigation.NavigationView>
 

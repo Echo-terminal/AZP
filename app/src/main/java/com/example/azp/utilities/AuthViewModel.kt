@@ -23,6 +23,10 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         return _userLiveData
     }
 
+    fun guestUser(){
+        authRepository.guestUser()
+    }
+
     fun checkUser():Boolean{
         return authRepository.checkUser()
     }
@@ -31,7 +35,9 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         authRepository.signOut()
         _userLiveData.value = null
     }
-
+    fun fromGuestToUser(email: String,password: String) {
+        authRepository.fromGuestToUser(email,password)
+    }
 }
 
 class AuthViewModelFactory(private val authRepository: AuthRepository) : ViewModelProvider.Factory {
