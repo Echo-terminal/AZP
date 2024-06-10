@@ -1,3 +1,4 @@
+
 package com.example.azp.fragment
 
 import android.app.AlertDialog
@@ -28,7 +29,6 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import java.util.Calendar
 
@@ -54,7 +54,20 @@ class GraphsFragment : Fragment() {
         barChart = view.findViewById(R.id.barChartq)
         val button1: Button = view.findViewById(R.id.button_show_date_picker1)
         val button2: Button = view.findViewById(R.id.button_show_date_picker2)
-        val button3: Button = view.findViewById(R.id.button_go)
+
+
+        val currentDate = Calendar.getInstance()
+
+        startDate = Date(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1, 1)
+
+        endDate = Date(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1, currentDate.getActualMaximum(Calendar.DAY_OF_MONTH))
+
+
+        updateButtonText(button1, startDate!!)
+        updateButtonText(button2, endDate!!)
+
+
+        updateBarChartWithSelectedDate()
 
         button1.setOnClickListener {
             isStartDatePicker = true
@@ -64,10 +77,6 @@ class GraphsFragment : Fragment() {
         button2.setOnClickListener {
             isStartDatePicker = false
             openDatePicker(button2)
-        }
-
-        button3.setOnClickListener {
-            updateBarChartWithSelectedDate()
         }
 
         taskModel.getTaskType { taskTypes ->
@@ -89,7 +98,7 @@ class GraphsFragment : Fragment() {
 
         val data = PieData(dataSet)
         pieChart.data = data
-        pieChart.invalidate() // refresh
+        pieChart.invalidate()
     }
 
     private fun setupBarChart(barChart: BarChart, tasks: List<Task>) {
@@ -114,7 +123,7 @@ class GraphsFragment : Fragment() {
             color = Color.parseColor("#008000") // Цвет столбцов
             valueTextSize = 6f // Размер текста значений
             valueTextColor = Color.BLACK // Цвет текста значений
-            setDrawValues(false) // Отключает значения по умолчанию
+            setDrawValues(false) // Отключить значения по умолчанию
         }
 
         val barData = BarData(dataSet)
@@ -126,11 +135,11 @@ class GraphsFragment : Fragment() {
             animateY(1000)
 
             axisLeft.apply {
-                isEnabled = false // Отключаем левую ось
-                axisMinimum = 0f // Устанавливаем минимум на 0, чтобы столбцы прилегали к нижней линии
+                isEnabled = false // Отключить левую ось
+                axisMinimum = 0f // Установить минимум на 0, чтобы столбцы прилегали к нижней линии
             }
 
-            axisRight.isEnabled = false // Отключаем правую ось
+            axisRight.isEnabled = false // Отключить правую ось
 
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
@@ -141,24 +150,26 @@ class GraphsFragment : Fragment() {
                 valueFormatter = IndexAxisValueFormatter((1..s).map { "$it Day" })
             }
 
-            legend.isEnabled = false // Отключаем легенду
+            legend.isEnabled = false // Отключить легенду
         }
 
-        barChart.invalidate() // refresh
+        barChart.invalidate() // Обновить график
     }
 
     private fun showDatePickerDialog() {
         val dateSetListener = DatePickerDialog.OnDateSetListener { _: DatePicker, year: Int, month: Int, day: Int ->
             val adjustedMonth = month + 1
-            val selectedDate = Date(year, adjustedMonth, day) // Создаем объект Date
+            val selectedDate = Date(year, adjustedMonth, day)
 
             if (isStartDatePicker) {
                 startDate = selectedDate
-                Log.d("GraphsFragment", "Start date selected: $startDate")
+                Log.d("GraphsFragment", "Выбрана начальная дата: $startDate")
             } else {
                 endDate = selectedDate
-                Log.d("GraphsFragment", "End date selected: $endDate")
+                Log.d("GraphsFragment", "Выбрана конечная дата: $endDate")
             }
+
+            updateBarChartWithSelectedDate()
         }
 
         val cal = Calendar.getInstance()
@@ -174,17 +185,19 @@ class GraphsFragment : Fragment() {
     private fun openDatePicker(button: Button) {
         datePickerDialog.setOnDateSetListener { _: DatePicker, year: Int, month: Int, day: Int ->
             val adjustedMonth = month + 1
-            val taskDate = Date(year, adjustedMonth, day) // Создаем объект Date
-            // Обновляем текст кнопки
+            val taskDate = Date(year, adjustedMonth, day)
+
             updateButtonText(button, taskDate)
 
             if (isStartDatePicker) {
                 startDate = taskDate
-                Log.d("GraphsFragment", "Start date selected: $startDate")
+                Log.d("GraphsFragment", "Выбрана начальная дата: $startDate")
             } else {
                 endDate = taskDate
-                Log.d("GraphsFragment", "End date selected: $endDate")
+                Log.d("GraphsFragment", "Выбрана конечная дата: $endDate")
             }
+
+            updateBarChartWithSelectedDate()
         }
         datePickerDialog.show()
     }
@@ -194,7 +207,7 @@ class GraphsFragment : Fragment() {
         val endDate = endDate
 
         if (startDate == null || endDate == null) {
-            Log.e("GraphsFragment", "Start date or end date not set")
+            Log.e("GraphsFragment", "Не установлены начальная или конечная дата")
             return
         }
 
@@ -206,5 +219,4 @@ class GraphsFragment : Fragment() {
     private fun updateButtonText(button: Button, date: Date) {
         button.text = "${date.day}/${date.month}/${date.year}"
     }
-
 }

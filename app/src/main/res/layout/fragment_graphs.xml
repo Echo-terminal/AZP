@@ -48,18 +48,6 @@
         app:layout_constraintVertical_bias="0.903" />
 
     <Button
-        android:id="@+id/button_go"
-        android:layout_width="130dp"
-        android:layout_height="38dp"
-        android:text="Go"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
-
-    <Button
         android:id="@+id/button_show_date_picker2"
         android:layout_width="130dp"
         android:layout_height="38dp"
