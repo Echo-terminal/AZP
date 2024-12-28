@@ -85,7 +85,7 @@ This project is licensed under the Apache 2.0 License.
 
 ## Disclaimer
 
-This project was created purely for educational purposes as part of a university assignment and is not intended for commercial use.
+This project was created purely for educational purposes and is not intended for commercial use.
 
 ## Links
 
